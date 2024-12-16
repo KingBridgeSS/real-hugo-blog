@@ -2,47 +2,47 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://localhost:1313/</loc>
+    <loc>https://blog.queenbridge.tech/</loc>
     <lastmod>2024-11-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/tags/misc/</loc>
+    <loc>https://blog.queenbridge.tech/tags/misc/</loc>
     <lastmod>2024-11-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/</loc>
+    <loc>https://blog.queenbridge.tech/posts/</loc>
     <lastmod>2024-11-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/tags/</loc>
+    <loc>https://blog.queenbridge.tech/tags/</loc>
     <lastmod>2024-11-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/2024_fall/pveandnat/</loc>
+    <loc>https://blog.queenbridge.tech/posts/2024_fall/pveandnat/</loc>
     <lastmod>2024-11-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/tags/coding/</loc>
+    <loc>https://blog.queenbridge.tech/tags/coding/</loc>
     <lastmod>2024-10-30T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/2024_fall/mit-6.58401/</loc>
+    <loc>https://blog.queenbridge.tech/posts/2024_fall/mit-6.58401/</loc>
     <lastmod>2024-10-30T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/2024_fall/mit-6.58402/</loc>
+    <loc>https://blog.queenbridge.tech/posts/2024_fall/mit-6.58402/</loc>
     <lastmod>2024-10-30T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/2024_fall/mit-6.58403/</loc>
+    <loc>https://blog.queenbridge.tech/posts/2024_fall/mit-6.58403/</loc>
     <lastmod>2024-10-30T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/2024_fall/mit-6.58404/</loc>
+    <loc>https://blog.queenbridge.tech/posts/2024_fall/mit-6.58404/</loc>
     <lastmod>2024-10-30T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/2024_fall/mit-6.58405/</loc>
+    <loc>https://blog.queenbridge.tech/posts/2024_fall/mit-6.58405/</loc>
     <lastmod>2024-10-30T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/tags/hacking/</loc>
+    <loc>https://blog.queenbridge.tech/tags/hacking/</loc>
     <lastmod>2024-03-28T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/2024_fall/git-actions-codeql/</loc>
+    <loc>https://blog.queenbridge.tech/posts/2024_fall/git-actions-codeql/</loc>
     <lastmod>2024-03-28T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/categories/</loc>
+    <loc>https://blog.queenbridge.tech/categories/</loc>
   </url><url>
-    <loc>http://localhost:1313/contact/</loc>
+    <loc>https://blog.queenbridge.tech/contact/</loc>
   </url>
 </urlset>
