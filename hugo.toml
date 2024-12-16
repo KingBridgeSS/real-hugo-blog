@@ -16,7 +16,7 @@ enableRobotsTXT = true
     endLevel = 4
     ordered = false
 [params]
-  avatarURL = "/images/avatar.png"
+  avatarURL = "/images/avatar.jpg"
   # description = "Fortunate enough to get a glimpse of the feast of techiques."
   # showPostsOnHomePage = "recent"
   # maxArticles = 10 # 主页显示的最大文章数
