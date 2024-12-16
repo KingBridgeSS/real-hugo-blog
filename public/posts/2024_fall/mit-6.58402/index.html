@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        :root {
+            --accent-color: #FF4D4D;
+        }
+    </style>
+
+    
+    
+    
+    
+    
+    
+
+    
+    <title>MIT 6.5840(2) - Lab1 MapReduce</title>
+    <meta name="description" content="">
+    <meta name="keywords" content='Coding'>
+
+    <meta property="og:url" content="http://localhost:1313/posts/2024_fall/mit-6.58402/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="MIT 6.5840(2) - Lab1 MapReduce">
+    <meta property="og:description" content="">
+    <meta property="og:image" content="/images/avatar.png">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="MIT 6.5840(2) - Lab1 MapReduce">
+    <meta name="twitter:description" content="">
+    <meta property="twitter:domain" content="http://localhost:1313/posts/2024_fall/mit-6.58402/">
+    <meta property="twitter:url" content="http://localhost:1313/posts/2024_fall/mit-6.58402/">
+    <meta name="twitter:image" content="/images/avatar.png">
+
+    
+    <link rel="canonical" href="http://localhost:1313/posts/2024_fall/mit-6.58402/" />
+
+    <link rel="stylesheet" type="text/css" href="http://localhost:1313//css/normalize.min.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" type="text/css" href="http://localhost:1313//css/main.css">
+    <link disabled id="dark-theme" rel="stylesheet" href="http://localhost:1313//css/dark.css">
+
+    <script src="http://localhost:1313//js/svg-injector.min.js"></script>
+    <script src="http://localhost:1313//js/feather-icons.min.js"></script>
+    <script src="http://localhost:1313//js/main.js"></script>
+
+    
+    
+</head>
+<body>
+        <script type="text/javascript">
+            
+            setThemeByUserPref();
+        </script><header class="header">
+    <nav class="header-nav">
+
+        
+        <div class="avatar">
+            <a href="http://localhost:1313/">
+                <img src="http://localhost:1313//images/avatar.png" alt="avatar" />
+            </a>
+        </div>
+        
+
+        <div class="nav-title">
+            <a class="nav-brand" href="http://localhost:1313/">BRIdGE&#39;s blog</a>
+        </div>
+
+        <div class="nav-links">
+            
+            <div class="nav-link">
+                <a href="http://localhost:1313/posts/"> Posts </a>
+            </div>
+            
+            <div class="nav-link">
+                <a href="http://localhost:1313/tags/"> Tags </a>
+            </div>
+            
+            <div class="nav-link">
+                <a href="http://localhost:1313/contact/"> Contact </a>
+            </div>
+            
+            <div class="nav-link">
+                <a href="http://localhost:1313/index.xml"> RSS </a>
+            </div>
+            
+            <div class="nav-link">
+                <a href="https://github.com/kingbridgess"><span data-feather='github'></span>  </a>
+            </div>
+            
+
+            <span class="nav-icons-divider"></span>
+            <div class="nav-link dark-theme-toggle">
+                <span id="dark-theme-toggle-screen-reader-target" class="sr-only"></span>
+                <a>
+                    <span id="theme-toggle-icon" data-feather="moon"></span>
+                </a>
+            </div>
+
+            <div class="nav-link" id="hamburger-menu-toggle">
+                <span id="hamburger-menu-toggle-screen-reader-target" class="sr-only">menu</span>
+                <a>
+                    <span data-feather="menu"></span>
+                </a>
+            </div>
+
+            
+            <ul class="nav-hamburger-list visibility-hidden">
+                
+                <li class="nav-item">
+                    <a href="http://localhost:1313/posts/"> Posts </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="http://localhost:1313/tags/"> Tags </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="http://localhost:1313/contact/"> Contact </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="http://localhost:1313/index.xml"> RSS </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="https://github.com/kingbridgess"><span data-feather='github'></span>  </a>
+                </li>
+                
+                <li class="nav-item dark-theme-toggle">
+                    <span id="dark-theme-toggle-screen-reader-target" class="sr-only">theme</span>
+                    <a>
+                        <span id="theme-toggle-icon" data-feather="moon"></span>
+                    </a>
+                </li>
+            </ul>
+
+        </div>
+    </nav>
+</header>
+<main id="content">
+    <div class="post container">
+    <div class="post-header-section">
+        <h1>MIT 6.5840(2) - Lab1 MapReduce</h1>
+        <small role="doc-subtitle"></small>
+        <p class="post-date">
+            October 30, 2024
+        </p>
+
+        <ul class="post-tags">
+        
+            <li class="post-tag"><a href="http://localhost:1313/tags/coding">Coding</a></li>
+        
+        </ul>
+    </div>
+
+    <div class="post-content">
+        <p>
+            <h1 id="理论">理论</h1>
+<p>MapReduce主要用来解决大规模数据处理的问题，它能够将一个计算任务分解为许多小任务，这些小任务可以在多台机器上并行执行，从而大大提高处理速度和效率。</p>
+<p>它的核心思想参考Google论文中的图片</p>
+<p><img src="
+        /posts/2024_fall/assets/1720323199815-9184d63b-4736-412e-bc32-1487718c2c04.png"/></p>
+<p>Master程序是主要的程序，它会将文件（N个）分配个worker，所有worker是对等的。worker将会首先执行Map命令，接受一些文件，然后输出为键值对并写入R个（用户可以自定义R的值）中间文件（图中的Intermediate files）。<strong>当所有Map任务完成后</strong>，Master会给worker分配Reduce任务，对中间文件进行处理，然后生成最终的结果文件。</p>
+<p>其中，Map函数和Reduce函数可以以插件的形式提供给系统。</p>
+<p>例如，在Words Count场景下（统计若干文件里每个相同单词的数量）：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plain" data-lang="plain"><span style="display:flex;"><span>map(String key, String value):
+</span></span><span style="display:flex;"><span>    // key: document name
+</span></span><span style="display:flex;"><span>    // value: document contents
+</span></span><span style="display:flex;"><span>    for each word w in value:
+</span></span><span style="display:flex;"><span>        EmitIntermediate(w, &#34;1&#34;);
+</span></span><span style="display:flex;"><span>reduce(String key, Iterator values):
+</span></span><span style="display:flex;"><span>    // key: a word
+</span></span><span style="display:flex;"><span>    // values: a list of counts
+</span></span><span style="display:flex;"><span>    int result = 0;
+</span></span><span style="display:flex;"><span>    for each v in values:
+</span></span><span style="display:flex;"><span>        result += ParseInt(v);
+</span></span><span style="display:flex;"><span>    Emit(AsString(result));
+</span></span></code></pre></div><p>这个例子中，map函数将生成一系列key为word，value为&quot;1&quot;的中间文件，然后reduce将同一个key聚合，统计value的数量。</p>
+<p>这样我们就实现了数据集的分布式处理。</p>
+<h1 id="代码">代码</h1>
+<p>系统的启动流程如下：</p>
+<ul>
+<li>运行<!-- raw HTML omitted -->mrcoordinator<!-- raw HTML omitted --></li>
+<li><!-- raw HTML omitted -->运行若干个mrworker<!-- raw HTML omitted --></li>
+<li><!-- raw HTML omitted -->mrcoordinator调用coordinator，并定期检查coordinator完成情况<!-- raw HTML omitted --></li>
+<li><!-- raw HTML omitted -->mrworker加载map和reduce函数，并拉起worker进程<!-- raw HTML omitted --></li>
+</ul>
+<p><!-- raw HTML omitted -->其中coordinator和worker之间使用rpc通信，我们只需要实现coordinator和worker的逻辑。<!-- raw HTML omitted --></p>
+<h2 id="font-stylecolor080808background-colorffffffcoordinatorfont"><!-- raw HTML omitted -->Coordinator<!-- raw HTML omitted --></h2>
+<p>几个要点：</p>
+<ul>
+<li>考虑维护task的状态，而不需要维护worker的状态，因为worker实际上是对等的。</li>
+<li>Coordinator是多线程的，需要加锁。由于不需要各线程通信，这里选用Mutex</li>
+<li>两个rpc关键函数：<!-- raw HTML omitted -->FetchTask和FinishTask，一个用来给worker查找任务，一个用来标记任务结束<!-- raw HTML omitted --></li>
+</ul>
+<p>关键结构体如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">type</span> Coordinator <span style="color:#8be9fd;font-style:italic">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// Your definitions here.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	lock               sync.Mutex
+</span></span><span style="display:flex;"><span>	files              []<span style="color:#8be9fd">string</span>
+</span></span><span style="display:flex;"><span>	mapTaskStatuses    []<span style="color:#8be9fd">int</span>
+</span></span><span style="display:flex;"><span>	reduceTaskStatuses []<span style="color:#8be9fd">int</span>
+</span></span><span style="display:flex;"><span>	nMap               <span style="color:#8be9fd">int</span>
+</span></span><span style="display:flex;"><span>	nReduce            <span style="color:#8be9fd">int</span>
+</span></span><span style="display:flex;"><span>	mapDoneNum         <span style="color:#8be9fd">int</span> <span style="color:#6272a4">// map任务完成数量
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	reduceDoneNum      <span style="color:#8be9fd">int</span>
+</span></span><span style="display:flex;"><span>	mapFinished        <span style="color:#8be9fd">bool</span>
+</span></span><span style="display:flex;"><span>	reduceFinished     <span style="color:#8be9fd">bool</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>两个rpc函数主要逻辑：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> (c <span style="color:#ff79c6">*</span>Coordinator) <span style="color:#50fa7b">FetchTask</span>(args <span style="color:#ff79c6">*</span>FetchTaskArgs, reply <span style="color:#ff79c6">*</span>FetchTaskReply) <span style="color:#8be9fd">error</span> {
+</span></span><span style="display:flex;"><span>	c.lock.<span style="color:#50fa7b">Lock</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">defer</span> c.lock.<span style="color:#50fa7b">Unlock</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> !c.mapFinished {
+</span></span><span style="display:flex;"><span>		mapNum <span style="color:#ff79c6">:=</span> xxx <span style="color:#6272a4">// 循环mapTaskStatuses找到未开始的任务
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>		<span style="color:#ff79c6">if</span> mapTaskStatuses全都分配了 {
+</span></span><span style="display:flex;"><span>			reply.TaskType = NOTASK
+</span></span><span style="display:flex;"><span>		} <span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#6272a4">// 分配任务
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>			<span style="color:#6272a4">// 10s不完成任务就错误恢复
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>		}
+</span></span><span style="display:flex;"><span>	} <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">if</span> !c.reduceFinished {
+</span></span><span style="display:flex;"><span>            <span style="color:#6272a4">// 和map类似
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>		}
+</span></span><span style="display:flex;"><span>	} <span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span>		reply.TaskType = NOTASK
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> <span style="color:#ff79c6">nil</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> (c <span style="color:#ff79c6">*</span>Coordinator) <span style="color:#50fa7b">FinishTask</span>(args <span style="color:#ff79c6">*</span>FinishTaskArgs, reply <span style="color:#ff79c6">*</span>FinishTaskReply) <span style="color:#8be9fd">error</span> {
+</span></span><span style="display:flex;"><span>	c.lock.<span style="color:#50fa7b">Lock</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">defer</span> c.lock.<span style="color:#50fa7b">Unlock</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">switch</span> args.TaskType {
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">case</span> MAPTASK:
+</span></span><span style="display:flex;"><span>		{
+</span></span><span style="display:flex;"><span>			<span style="color:#6272a4">// 由于错误恢复机制，这里可能提交同样的任务。仅接受第一个提交的任务即可
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>			<span style="color:#ff79c6">if</span> c.mapTaskStatuses[args.TaskNum] <span style="color:#ff79c6">!=</span> DONE {
+</span></span><span style="display:flex;"><span>				c.mapDoneNum <span style="color:#ff79c6">+=</span> <span style="color:#bd93f9">1</span>
+</span></span><span style="display:flex;"><span>				c.mapTaskStatuses[args.TaskNum] = DONE
+</span></span><span style="display:flex;"><span>				<span style="color:#ff79c6">if</span> c.mapDoneNum <span style="color:#ff79c6">==</span> c.nMap {
+</span></span><span style="display:flex;"><span>					c.mapFinished = <span style="color:#ff79c6">true</span>
+</span></span><span style="display:flex;"><span>				}
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">case</span> REDUCETASK:
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4">// 和上面类似
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> <span style="color:#ff79c6">nil</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="worker">Worker</h2>
+<p>worker主要是业务逻辑。大体框架如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">Worker</span>(mapf <span style="color:#8be9fd;font-style:italic">func</span>(<span style="color:#8be9fd">string</span>, <span style="color:#8be9fd">string</span>) []KeyValue,
+</span></span><span style="display:flex;"><span>	reducef <span style="color:#8be9fd;font-style:italic">func</span>(<span style="color:#8be9fd">string</span>, []<span style="color:#8be9fd">string</span>) <span style="color:#8be9fd">string</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">for</span> {
+</span></span><span style="display:flex;"><span>		reply <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">&amp;</span>FetchTaskReply{}
+</span></span><span style="display:flex;"><span>		ok <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">call</span>(<span style="color:#f1fa8c">&#34;Coordinator.FetchTask&#34;</span>, <span style="color:#ff79c6">&amp;</span>FetchTaskArgs{}, <span style="color:#ff79c6">&amp;</span>reply)
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">if</span> ok {
+</span></span><span style="display:flex;"><span>			<span style="color:#ff79c6">switch</span> reply.TaskType {
+</span></span><span style="display:flex;"><span>			<span style="color:#ff79c6">case</span> MAPTASK:
+</span></span><span style="display:flex;"><span>				{
+</span></span><span style="display:flex;"><span>                    <span style="color:#6272a4">// 根据reply指定的filename调用map处理，并输出中间文件
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>                    <span style="color:#6272a4">// rpc FinishTask
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>				}
+</span></span><span style="display:flex;"><span>			<span style="color:#ff79c6">case</span> REDUCETASK:
+</span></span><span style="display:flex;"><span>				{
+</span></span><span style="display:flex;"><span>                    <span style="color:#6272a4">// 根据reply的ReduceNum读取中间文件（多个），输出为一个结果文件
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>                    mp <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">map</span>[<span style="color:#8be9fd">string</span>][]<span style="color:#8be9fd">string</span>)
+</span></span><span style="display:flex;"><span>                    <span style="color:#6272a4">// 聚合
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>                    <span style="color:#6272a4">// reduce
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>                    <span style="color:#6272a4">// rpc FinishTask
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>				}
+</span></span><span style="display:flex;"><span>			<span style="color:#ff79c6">case</span> NOTASK:
+</span></span><span style="display:flex;"><span>				{
+</span></span><span style="display:flex;"><span>					<span style="color:#ff79c6">break</span>
+</span></span><span style="display:flex;"><span>				}
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		} <span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#ff79c6">break</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>一些细节需要注意：</p>
+<ul>
+<li>中间文件名为<!-- raw HTML omitted -->mr-X-Y，X是MapNum（即map任务编号），Y是map函数生成的key到[0, NReduce)整数集的单射，具体而言是通过如下哈希函数计算的：<!-- raw HTML omitted --></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">ihash</span>(key <span style="color:#8be9fd">string</span>) <span style="color:#8be9fd">int</span> {
+</span></span><span style="display:flex;"><span>	h <span style="color:#ff79c6">:=</span> fnv.<span style="color:#50fa7b">New32a</span>()
+</span></span><span style="display:flex;"><span>	h.<span style="color:#50fa7b">Write</span>([]<span style="color:#8be9fd;font-style:italic">byte</span>(key))
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> <span style="color:#8be9fd;font-style:italic">int</span>(h.<span style="color:#50fa7b">Sum32</span>() <span style="color:#ff79c6">&amp;</span> <span style="color:#bd93f9">0x7fffffff</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li>每一个reduce函数需要处理一个Y对应的所有X</li>
+<li>由于reduce的输入是一个key和它对应的所有values，所以需要对中间文件进行聚合。这里使用的是HashMap。<!-- raw HTML omitted -->在生产级别的MapReduce实现中，该部分需要内存+外存来保证不会OOM。<!-- raw HTML omitted --></li>
+<li><!-- raw HTML omitted -->为了保证创建并写入文件的原子性（要么完全写入，要么完全不写入），可以先创建临时文件，再写入，再重命名：<!-- raw HTML omitted --></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">writeStringToFileAtomic</span>(filename <span style="color:#8be9fd">string</span>, content <span style="color:#8be9fd">string</span>) {
+</span></span><span style="display:flex;"><span>	f, _ <span style="color:#ff79c6">:=</span> os.<span style="color:#50fa7b">CreateTemp</span>(<span style="color:#f1fa8c">&#34;.&#34;</span>, filename<span style="color:#ff79c6">+</span><span style="color:#f1fa8c">&#34;*&#34;</span>)
+</span></span><span style="display:flex;"><span>	f.<span style="color:#50fa7b">WriteString</span>(content)
+</span></span><span style="display:flex;"><span>	os.<span style="color:#50fa7b">Rename</span>(f.<span style="color:#50fa7b">Name</span>(), filename)
+</span></span><span style="display:flex;"><span>	f.<span style="color:#50fa7b">Close</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li>reduce最后生成的文件内容需要不断拼接结果字符串，应该使用StringBuilder来获得更好的性能</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">var</span> result strings.Builder
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">for</span> key, values <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> mp {
+</span></span><span style="display:flex;"><span>    reduceResult <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">reducef</span>(key, values)
+</span></span><span style="display:flex;"><span>    result.<span style="color:#50fa7b">WriteString</span>(fmt.<span style="color:#50fa7b">Sprintf</span>(<span style="color:#f1fa8c">&#34;%v %v\n&#34;</span>, key, reduceResult))
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// 获得字符串：result.String()
+</span></span></span></code></pre></div><h1 id="拓展">拓展</h1>
+<p>重读Google的论文可以发现Google用于生产环境的MapReduce相比于我们上面实现的lab还有几个改进：</p>
+<ul>
+<li><!-- raw HTML omitted -->当worker运行在多个机器上时，需要使用一些分布式文件系统方案来管理文件，例如GFS<!-- raw HTML omitted --></li>
+<li><!-- raw HTML omitted -->reduce生成的文件可能会被用于下一个MapReduce任务，从而形成某种链子<!-- raw HTML omitted --></li>
+<li><!-- raw HTML omitted -->在实际实现中，还是需要维护Worker的状态，这样可以便于获取Worker机器的信息、错误恢复等<!-- raw HTML omitted --></li>
+<li><!-- raw HTML omitted -->实际使用中，Google发现当一些机器在即将处理完Map或Reduce任务时，性能会出现明显的下降。解决方法是Master在组任务即将完成时会分配剩下的任务作为Backup Tasks，分配到其他worker上，以最快完成的任务为最终结果。  <!-- raw HTML omitted --></li>
+</ul>
+<p><!-- raw HTML omitted -->Google也提出了一些改进思路<!-- raw HTML omitted --></p>
+<ul>
+<li><!-- raw HTML omitted -->Partitioning Function：上面把key映射的hash函数是可以自定义的，叫做Partitioning Function。例如key是URL的时候可以把同一个Host分到同一个Reduce任务里<!-- raw HTML omitted --></li>
+<li><!-- raw HTML omitted -->Ordering Guarantees：在同一个partition里可以先做key的排序处理，这样可以使得结果更为友好<!-- raw HTML omitted --></li>
+<li><!-- raw HTML omitted -->Combiner Function：注意到上面Words Count例子中，大量的类似(word,&ldquo;1&rdquo;)会在网络上传输，而根据key聚合values发生在reduce函数中。如果把聚合操作写在map函数里则可以避免这些重复的数据传输。combiner function和reduce function的唯一区别是前者输出中间文件，后者输出最终文件。<!-- raw HTML omitted --></li>
+<li><!-- raw HTML omitted --> Input and Output Types：Google提供了reader接口，使得用户在实现Map函数的时候可以读取更多的Input Types，例如数据库里的数据或内存里的数据。Output同理。<!-- raw HTML omitted --></li>
+<li><!-- raw HTML omitted -->master可以维护一个HTTP panel显示各个worker、task等的状态<!-- raw HTML omitted --></li>
+<li><!-- raw HTML omitted -->Counter：可以在map函数调用自定义的counter，持续返回给master。者可以用于收集一些数据的信息，例如Words Count例子中<!-- raw HTML omitted --></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>Counter<span style="color:#ff79c6">*</span> uppercase;
+</span></span><span style="display:flex;"><span>uppercase = <span style="color:#50fa7b">GetCounter</span>(<span style="color:#f1fa8c">&#34;uppercase&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">map</span>(String name, String contents):
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">for</span> each word w in contents:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> (<span style="color:#50fa7b">IsCapitalized</span>(w)):
+</span></span><span style="display:flex;"><span>            uppercase<span style="color:#ff79c6">-</span>&gt;<span style="color:#50fa7b">Increment</span>();
+</span></span><span style="display:flex;"><span>        <span style="color:#50fa7b">EmitIntermediate</span>(w, <span style="color:#f1fa8c">&#34;1&#34;</span>);
+</span></span></code></pre></div><p>最后，2024年的今天MapReduce对于Google来说早已经成为了历史。但是它催生出了Hadoop等开源大数据处理框架。</p>
+
+        </p>
+    </div>
+</div>
+
+<aside class="post-toc">
+    <nav id="toc">
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#理论">理论</a></li>
+    <li><a href="#代码">代码</a>
+      <ul>
+        <li><a href="#font-stylecolor080808background-colorffffffcoordinatorfont"><!-- raw HTML omitted -->Coordinator<!-- raw HTML omitted --></a></li>
+        <li><a href="#worker">Worker</a></li>
+      </ul>
+    </li>
+    <li><a href="#拓展">拓展</a></li>
+  </ul>
+</nav>
+    </nav>
+</aside>
+
+
+
+    
+
+        </main><footer class="footer">
+    <span>&copy; 2024 </span>
+    <span>
+        Made with &#10084;&#65039; using <a target="_blank" href="https://github.com/526avijitgupta/gokarna">Gokarna</a>
+    </span>
+</footer>
+</body>
+</html>

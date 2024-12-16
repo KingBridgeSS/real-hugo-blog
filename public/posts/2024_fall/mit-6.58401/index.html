@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        :root {
+            --accent-color: #FF4D4D;
+        }
+    </style>
+
+    
+    
+    
+    
+    
+    
+
+    
+    <title>MIT 6.5840(1) - Introduction</title>
+    <meta name="description" content="">
+    <meta name="keywords" content='Coding'>
+
+    <meta property="og:url" content="http://localhost:1313/posts/2024_fall/mit-6.58401/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="MIT 6.5840(1) - Introduction">
+    <meta property="og:description" content="">
+    <meta property="og:image" content="/images/avatar.png">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="MIT 6.5840(1) - Introduction">
+    <meta name="twitter:description" content="">
+    <meta property="twitter:domain" content="http://localhost:1313/posts/2024_fall/mit-6.58401/">
+    <meta property="twitter:url" content="http://localhost:1313/posts/2024_fall/mit-6.58401/">
+    <meta name="twitter:image" content="/images/avatar.png">
+
+    
+    <link rel="canonical" href="http://localhost:1313/posts/2024_fall/mit-6.58401/" />
+
+    <link rel="stylesheet" type="text/css" href="http://localhost:1313//css/normalize.min.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" type="text/css" href="http://localhost:1313//css/main.css">
+    <link disabled id="dark-theme" rel="stylesheet" href="http://localhost:1313//css/dark.css">
+
+    <script src="http://localhost:1313//js/svg-injector.min.js"></script>
+    <script src="http://localhost:1313//js/feather-icons.min.js"></script>
+    <script src="http://localhost:1313//js/main.js"></script>
+
+    
+    
+</head>
+<body>
+        <script type="text/javascript">
+            
+            setThemeByUserPref();
+        </script><header class="header">
+    <nav class="header-nav">
+
+        
+        <div class="avatar">
+            <a href="http://localhost:1313/">
+                <img src="http://localhost:1313//images/avatar.png" alt="avatar" />
+            </a>
+        </div>
+        
+
+        <div class="nav-title">
+            <a class="nav-brand" href="http://localhost:1313/">BRIdGE&#39;s blog</a>
+        </div>
+
+        <div class="nav-links">
+            
+            <div class="nav-link">
+                <a href="http://localhost:1313/posts/"> Posts </a>
+            </div>
+            
+            <div class="nav-link">
+                <a href="http://localhost:1313/tags/"> Tags </a>
+            </div>
+            
+            <div class="nav-link">
+                <a href="http://localhost:1313/contact/"> Contact </a>
+            </div>
+            
+            <div class="nav-link">
+                <a href="http://localhost:1313/index.xml"> RSS </a>
+            </div>
+            
+            <div class="nav-link">
+                <a href="https://github.com/kingbridgess"><span data-feather='github'></span>  </a>
+            </div>
+            
+
+            <span class="nav-icons-divider"></span>
+            <div class="nav-link dark-theme-toggle">
+                <span id="dark-theme-toggle-screen-reader-target" class="sr-only"></span>
+                <a>
+                    <span id="theme-toggle-icon" data-feather="moon"></span>
+                </a>
+            </div>
+
+            <div class="nav-link" id="hamburger-menu-toggle">
+                <span id="hamburger-menu-toggle-screen-reader-target" class="sr-only">menu</span>
+                <a>
+                    <span data-feather="menu"></span>
+                </a>
+            </div>
+
+            
+            <ul class="nav-hamburger-list visibility-hidden">
+                
+                <li class="nav-item">
+                    <a href="http://localhost:1313/posts/"> Posts </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="http://localhost:1313/tags/"> Tags </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="http://localhost:1313/contact/"> Contact </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="http://localhost:1313/index.xml"> RSS </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="https://github.com/kingbridgess"><span data-feather='github'></span>  </a>
+                </li>
+                
+                <li class="nav-item dark-theme-toggle">
+                    <span id="dark-theme-toggle-screen-reader-target" class="sr-only">theme</span>
+                    <a>
+                        <span id="theme-toggle-icon" data-feather="moon"></span>
+                    </a>
+                </li>
+            </ul>
+
+        </div>
+    </nav>
+</header>
+<main id="content">
+    <div class="post container">
+    <div class="post-header-section">
+        <h1>MIT 6.5840(1) - Introduction</h1>
+        <small role="doc-subtitle"></small>
+        <p class="post-date">
+            October 30, 2024
+        </p>
+
+        <ul class="post-tags">
+        
+            <li class="post-tag"><a href="http://localhost:1313/tags/coding">Coding</a></li>
+        
+        </ul>
+    </div>
+
+    <div class="post-content">
+        <p>
+            <p>重生之我要学习分布式系列第一篇。</p>
+<p>课程主页：</p>
+<p><a href="https://pdos.csail.mit.edu/6.824/schedule.html">6.5840 Schedule: Spring 2024</a></p>
+<p>明星课程MIT 6.5840: Distributed Systems，原名6.824，在2024年一共布置了5个lab。这几个lab循序渐进，从古法分布式MapReduce搓起，然后手搓raft，并最终造出类似TiKV的分布式数据库，整个过程做下来真有种开局一根针手搓Windows的爽感。</p>
+<h1 id="如何防治劲椎病">如何防治劲椎病</h1>
+<p>就像某国产3A大作的九九八十一难的第一难是解压游戏，本课程的第一难是让人憋出劲椎病的文档网页。</p>
+<p><img src="
+        /posts/2024_fall/assets/1730276090038-6c05e18c-4302-47f8-be88-ac49b3f71235.png"/></p>
+<p>由于文档弹道偏左，考虑在控制台里把它水平居中。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#ff79c6">const</span> body <span style="color:#ff79c6">=</span> <span style="color:#8be9fd;font-style:italic">document</span>.body;
+</span></span><span style="display:flex;"><span>body.style.maxWidth <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;800px&#34;</span>;
+</span></span><span style="display:flex;"><span>body.style.marginLeft <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;auto&#34;</span>;
+</span></span><span style="display:flex;"><span>body.style.marginRight <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;auto&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">const</span> elements <span style="color:#ff79c6">=</span> body.getElementsByTagName(<span style="color:#f1fa8c">&#34;*&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">for</span> (<span style="color:#8be9fd;font-style:italic">let</span> i <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>; i <span style="color:#ff79c6">&lt;</span> elements.length; i<span style="color:#ff79c6">++</span>) {
+</span></span><span style="display:flex;"><span>    elements[i].style.maxWidth <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;100%&#34;</span>;
+</span></span><span style="display:flex;"><span>    elements[i].style.boxSizing <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;border-box&#34;</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="lab内容简单介绍">lab内容简单介绍</h1>
+<p>lab1是比较独立的开胃小菜，要实现一个Google曾经使用的MapReduce框架。</p>
+<p>lab2实现一个简单的单体KV服务器，要求在网络不稳定的情况下也能保证服务不出错。</p>
+<p>lab3则是实现Raft协议。</p>
+<p>lab4要基于lab3实现的Raft协议，构建一个KV服务器集群，也就是在lab2的基础上用Raft协议保证Fault-tolerant。</p>
+<p>lab5则要在lab4的基础上，把数据库的数据分为几个分片（shard）来减轻单个服务器负担，需要实现他们的数据迁移。</p>
+<p>个人认为最难实现的两个lab显然是lab3和lab5。lab3需要对Raft的原始论文仔细研读，lab5则需要一开始就设计好整个架构如何实现，辅以网上搜索相关的实现思路才好开始上手。</p>
+<h1 id="debug小技巧">Debug小技巧</h1>
+<p>个人认为实现这些lab最有挑战性的地方不是在设计或者编写上，而是debug上。因为传统的打断点debug方法是对一个单体应用操作，而本次lab需要面对的是一个集群系统，打断点的方法就很难操作，所以主要还是靠print大法。那么设计一个好的打印函数非常有必要，例如可以把打印函数抽象出来。例如lab5我用了这样一个函数对println包装</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> (kv <span style="color:#ff79c6">*</span>ShardKV) <span style="color:#50fa7b">SSPrintf</span>(format <span style="color:#8be9fd">string</span>, a <span style="color:#ff79c6">...</span><span style="color:#8be9fd;font-style:italic">interface</span>{}) (n <span style="color:#8be9fd">int</span>, err <span style="color:#8be9fd">error</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> SDebug {
+</span></span><span style="display:flex;"><span>		log.<span style="color:#50fa7b">Printf</span>(<span style="color:#f1fa8c">&#34;[server %d]&#34;</span><span style="color:#ff79c6">+</span>format, <span style="color:#8be9fd;font-style:italic">append</span>([]<span style="color:#8be9fd;font-style:italic">interface</span>{}{kv.gid}, a<span style="color:#ff79c6">...</span>)<span style="color:#ff79c6">...</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>kv.gid是标识ShardKV的相关信息之一，实践上还可以塞入更多的基本信息，当然这可能要考虑获取这些信息会不会造成读写上的条件竞争的问题。</p>
+<p>本次实验我只用了SDebug来判断是否打印日志，但实际上可以设计一个类似level的东西，来方便区分重要日志和不那么重要的日志。</p>
+<p>在需要分析Bug日志的时候，可以借助Linux的tee命令让日志同时输出到stdout和文件里。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>go <span style="color:#8be9fd;font-style:italic">test</span> -race -run TestConcurrent3_5B | tee bug.txt
+</span></span></code></pre></div><p>在需要输出日志的地方可以多加几个条件判断，确认是bug可能发生的那种条件，这样可以减少大量无意义的日志。</p>
+<h1 id="代码仓库">代码仓库</h1>
+<p><a href="https://github.com/KingBridgeSS/MIT-6.5840">KingBridgeSS/MIT-6.5840: My solution for labs in MIT-6.5840 (https://pdos.csail.mit.edu/6.824/)</a></p>
+
+        </p>
+    </div>
+</div>
+
+<aside class="post-toc">
+    <nav id="toc">
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#如何防治劲椎病">如何防治劲椎病</a></li>
+    <li><a href="#lab内容简单介绍">lab内容简单介绍</a></li>
+    <li><a href="#debug小技巧">Debug小技巧</a></li>
+    <li><a href="#代码仓库">代码仓库</a></li>
+  </ul>
+</nav>
+    </nav>
+</aside>
+
+
+
+    
+
+        </main><footer class="footer">
+    <span>&copy; 2024 </span>
+    <span>
+        Made with &#10084;&#65039; using <a target="_blank" href="https://github.com/526avijitgupta/gokarna">Gokarna</a>
+    </span>
+</footer>
+</body>
+</html>

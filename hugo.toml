@@ -1,0 +1,63 @@
+# baseURL = "http://127.0.0.1"
+# https://github.com/526avijitgupta/gokarna
+baseURL="https://blog.queenbridge.tech"
+defaultContentLanguage = "en"
+languageCode = "en"
+
+title = "BRIdGE's blog"
+
+theme = "gokarna"
+pygmentsStyle = "dracula"
+# Automatically generate robots.txt
+enableRobotsTXT = true
+[markup]
+  [markup.tableOfContents]
+    startLevel = 1
+    endLevel = 4
+    ordered = false
+[params]
+  avatarURL = "/images/avatar.png"
+  # description = "Fortunate enough to get a glimpse of the feast of techiques."
+  # showPostsOnHomePage = "recent"
+  # maxArticles = 10 # 主页显示的最大文章数
+[menu]
+  [[menu.main]]
+    # Unique identifier for a menu item
+    identifier = "posts"
+
+    url = "/posts/"
+    
+    # You can add extra information before the name (HTML format is supported), such as icons
+    pre = ""
+
+    # You can add extra information after the name (HTML format is supported), such as icons
+    post = ""
+
+    # Display name
+    name = "Posts"
+
+    # Weights are used to determine the ordering
+    weight = 1
+  [[menu.main]]
+    identifier = "tags"
+    name = "Tags"
+    url = "/tags/"
+    weight = 2
+
+  [[menu.main]]
+    identifier = "contact"
+    name = "Contact"
+    url = "/contact/"
+    weight = 4
+  [[menu.main]]
+    identifier="rss" 
+    name="RSS"
+    url="/index.xml"
+    weight=5
+  [[menu.main]]
+    identifier = "github"
+    url = "https://github.com/kingbridgess"
+    weight = 6
+    
+    # We use feather-icons: https://feathericons.com/
+    pre = "<span data-feather='github'></span>"

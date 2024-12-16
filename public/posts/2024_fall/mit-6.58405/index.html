@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        :root {
+            --accent-color: #FF4D4D;
+        }
+    </style>
+
+    
+    
+    
+    
+    
+    
+
+    
+    <title>MIT 6.5840(5) - Lab5 Sharded KeyValue Service</title>
+    <meta name="description" content="">
+    <meta name="keywords" content='Coding'>
+
+    <meta property="og:url" content="http://localhost:1313/posts/2024_fall/mit-6.58405/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="MIT 6.5840(5) - Lab5 Sharded KeyValue Service">
+    <meta property="og:description" content="">
+    <meta property="og:image" content="/images/avatar.png">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="MIT 6.5840(5) - Lab5 Sharded KeyValue Service">
+    <meta name="twitter:description" content="">
+    <meta property="twitter:domain" content="http://localhost:1313/posts/2024_fall/mit-6.58405/">
+    <meta property="twitter:url" content="http://localhost:1313/posts/2024_fall/mit-6.58405/">
+    <meta name="twitter:image" content="/images/avatar.png">
+
+    
+    <link rel="canonical" href="http://localhost:1313/posts/2024_fall/mit-6.58405/" />
+
+    <link rel="stylesheet" type="text/css" href="http://localhost:1313//css/normalize.min.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" type="text/css" href="http://localhost:1313//css/main.css">
+    <link disabled id="dark-theme" rel="stylesheet" href="http://localhost:1313//css/dark.css">
+
+    <script src="http://localhost:1313//js/svg-injector.min.js"></script>
+    <script src="http://localhost:1313//js/feather-icons.min.js"></script>
+    <script src="http://localhost:1313//js/main.js"></script>
+
+    
+    
+</head>
+<body>
+        <script type="text/javascript">
+            
+            setThemeByUserPref();
+        </script><header class="header">
+    <nav class="header-nav">
+
+        
+        <div class="avatar">
+            <a href="http://localhost:1313/">
+                <img src="http://localhost:1313//images/avatar.png" alt="avatar" />
+            </a>
+        </div>
+        
+
+        <div class="nav-title">
+            <a class="nav-brand" href="http://localhost:1313/">BRIdGE&#39;s blog</a>
+        </div>
+
+        <div class="nav-links">
+            
+            <div class="nav-link">
+                <a href="http://localhost:1313/posts/"> Posts </a>
+            </div>
+            
+            <div class="nav-link">
+                <a href="http://localhost:1313/tags/"> Tags </a>
+            </div>
+            
+            <div class="nav-link">
+                <a href="http://localhost:1313/contact/"> Contact </a>
+            </div>
+            
+            <div class="nav-link">
+                <a href="http://localhost:1313/index.xml"> RSS </a>
+            </div>
+            
+            <div class="nav-link">
+                <a href="https://github.com/kingbridgess"><span data-feather='github'></span>  </a>
+            </div>
+            
+
+            <span class="nav-icons-divider"></span>
+            <div class="nav-link dark-theme-toggle">
+                <span id="dark-theme-toggle-screen-reader-target" class="sr-only"></span>
+                <a>
+                    <span id="theme-toggle-icon" data-feather="moon"></span>
+                </a>
+            </div>
+
+            <div class="nav-link" id="hamburger-menu-toggle">
+                <span id="hamburger-menu-toggle-screen-reader-target" class="sr-only">menu</span>
+                <a>
+                    <span data-feather="menu"></span>
+                </a>
+            </div>
+
+            
+            <ul class="nav-hamburger-list visibility-hidden">
+                
+                <li class="nav-item">
+                    <a href="http://localhost:1313/posts/"> Posts </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="http://localhost:1313/tags/"> Tags </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="http://localhost:1313/contact/"> Contact </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="http://localhost:1313/index.xml"> RSS </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="https://github.com/kingbridgess"><span data-feather='github'></span>  </a>
+                </li>
+                
+                <li class="nav-item dark-theme-toggle">
+                    <span id="dark-theme-toggle-screen-reader-target" class="sr-only">theme</span>
+                    <a>
+                        <span id="theme-toggle-icon" data-feather="moon"></span>
+                    </a>
+                </li>
+            </ul>
+
+        </div>
+    </nav>
+</header>
+<main id="content">
+    <div class="post container">
+    <div class="post-header-section">
+        <h1>MIT 6.5840(5) - Lab5 Sharded KeyValue Service</h1>
+        <small role="doc-subtitle"></small>
+        <p class="post-date">
+            October 30, 2024
+        </p>
+
+        <ul class="post-tags">
+        
+            <li class="post-tag"><a href="http://localhost:1313/tags/coding">Coding</a></li>
+        
+        </ul>
+    </div>
+
+    <div class="post-content">
+        <p>
+            <h2 id="font-stylecolorrgb0-0-0架构总览font"><!-- raw HTML omitted -->架构总览<!-- raw HTML omitted --></h2>
+<p>Lab5在KVRaft的基础上实现了数据的分布式存储，把全量数据分成一个个&quot;Shard&quot;，分别存储在不同的Group里，每个Group是一群Raft集群，这些Group里的服务器可以通过外部API实时调整他们的加入、退出。</p>
+<p>下面这张图描述了ShardKV的架构</p>
+<p><img src="
+        /posts/2024_fall/assets/1730270544444-d1c43a0e-510d-4208-ac45-4ac8184a4497-1730303201535-3-1730303541114-3.png"/></p>
+<p><!-- raw HTML omitted -->一些补充：<!-- raw HTML omitted --></p>
+<ul>
+<li>每个Group之间唯一的通信是Shard Migration，和Raft无关，而一个Group的内部几个Server形成一个Raft集群</li>
+<li>Group N里的KVServer 1是当前Group的raft leader，其余是follower。当Client请求KVServer的时候，会像KVRaft那样遍历这些KVServer，直到找到Leader</li>
+<li>Config的定义如下：</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">type</span> Config <span style="color:#8be9fd;font-style:italic">struct</span> {
+</span></span><span style="display:flex;"><span>    Num    <span style="color:#8be9fd">int</span>              <span style="color:#6272a4">// config number
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    Shards [NShards]<span style="color:#8be9fd">int</span>     <span style="color:#6272a4">// shardId -&gt; gid
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    Groups <span style="color:#8be9fd;font-style:italic">map</span>[<span style="color:#8be9fd">int</span>][]<span style="color:#8be9fd">string</span> <span style="color:#6272a4">// gid -&gt; servers[]
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>}
+</span></span></code></pre></div><ul>
+<li>&ldquo;Shard&rdquo;，是由Key唯一确定的，课程代码里给的转换方式是：</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">key2shard</span>(key <span style="color:#8be9fd">string</span>) <span style="color:#8be9fd">int</span> {
+</span></span><span style="display:flex;"><span>	shard <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> <span style="color:#8be9fd;font-style:italic">len</span>(key) &gt; <span style="color:#bd93f9">0</span> {
+</span></span><span style="display:flex;"><span>		shard = <span style="color:#8be9fd;font-style:italic">int</span>(key[<span style="color:#bd93f9">0</span>])
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	shard <span style="color:#ff79c6">%=</span> shardctrler.NShards
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> shard
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="5a-shardctrler">5A shardctrler</h2>
+<p>需要实现这几个接口：Join/Leave/Move/Query。</p>
+<p>Join和Leave都是对一个或多个组里的Server进行了增加或者修改，controller需要根据新出现的Group或者删除的Group对所有Group分配的Shard做出管理。这里用了平均分配的办法（生产环境可以计算每个Group里的计算性能加权分配），也就是每个Group分配NShards/NGroups个Shard。</p>
+<p>由于提供了Move接口，可能会导致已经本来配平的shards再次被破坏，所以在add或remove前需要preBalance处理，处理过程和最终的Balance处理相似：</p>
+<p>把原来的shards数组转化为map（成为shardRev），然后用NShards/NGroups计算出每个Group需要几个Shard，然后考虑用一个队列pool，第一轮循环shardRev把每一组多余的shard回收，第二轮循环shardRev把不足的组补平，然后再把剩下的shard分给一轮循环shardRev。</p>
+<p>因为是集群系统，需要消除循环map导致的无序性，所以写了一个双链表维护Node的顺序（类似Java里的LinkedHashMap类），称为orderedMap。</p>
+<p>由于需要移动最少次数，所以在shard进入和退出pool的时候也需要根据实际情况定义顺序，所以也是写了一个deque（double end queue）。以及在最后把几个余数shard分配的时候要从shardRev.Keys()的逆序遍历来保证最少次数。</p>
+<p>计M为Shard数，N为Group数，这种算法的时间复杂度是O(M+N*log(N))，主要在orderedMap的排序算法上；空间复杂度是O(M+N)。</p>
+<h2 id="5b-shard-movement--challenges">5B Shard Movement &amp;&amp; Challenges</h2>
+<p>以下的方案顺便把3个challenge也完成了，我的建议是写的时候以实现后2个challenge为目标，否则写到他们的时候可能得大改架构。</p>
+<h3 id="如何发现迁移目标">如何发现迁移目标</h3>
+<p>首先解决的一个问题就是当一个server发现自身shard多余或者缺失时，是push还是poll，这里我使用了push。我把Config拉取、检测自身Shard是否多余、是否缺失都用一个loop完成，这里存在一个次序问题，在一个Config完成更新之前，必须确保自身Shard没有多余，然后确保Shard没有缺失，再更新Config。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> (kv <span style="color:#ff79c6">*</span>ShardKV) <span style="color:#50fa7b">ConfigLoop</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">for</span> !kv.<span style="color:#50fa7b">killed</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">if</span> _, isLeader <span style="color:#ff79c6">:=</span> kv.rf.<span style="color:#50fa7b">GetState</span>(); !isLeader {
+</span></span><span style="display:flex;"><span>			<span style="color:#50fa7b">loopSleep</span>()
+</span></span><span style="display:flex;"><span>			<span style="color:#ff79c6">continue</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		kv.mu.<span style="color:#50fa7b">Lock</span>()
+</span></span><span style="display:flex;"><span>		redundantShardIdList <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>([]<span style="color:#8be9fd">int</span>, <span style="color:#bd93f9">0</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#6272a4">// 检测自己是否有多余Shard，如果有就加到redundantShardIdList里
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>		<span style="color:#6272a4">// ...
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">for</span> _, shardId <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> redundantShardIdList {
+</span></span><span style="display:flex;"><span>			<span style="color:#6272a4">// 把每个多余的Shard发到需要的server
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">if</span> <span style="color:#8be9fd;font-style:italic">len</span>(redundantShardIdList) &gt; <span style="color:#bd93f9">0</span> {
+</span></span><span style="display:flex;"><span>			kv.mu.<span style="color:#50fa7b">Unlock</span>()
+</span></span><span style="display:flex;"><span>			<span style="color:#50fa7b">loopSleep</span>()
+</span></span><span style="display:flex;"><span>			<span style="color:#ff79c6">continue</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		recv <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">true</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#6272a4">// 检测自己是否收到了所有需要的Shard
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>		<span style="color:#6272a4">// ...
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>		<span style="color:#ff79c6">if</span> !recv {
+</span></span><span style="display:flex;"><span>			kv.mu.<span style="color:#50fa7b">Unlock</span>()
+</span></span><span style="display:flex;"><span>			<span style="color:#50fa7b">loopSleep</span>()
+</span></span><span style="display:flex;"><span>			<span style="color:#ff79c6">continue</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		local <span style="color:#ff79c6">:=</span> kv.curConfig
+</span></span><span style="display:flex;"><span>		kv.mu.<span style="color:#50fa7b">Unlock</span>()
+</span></span><span style="display:flex;"><span>		<span style="color:#6272a4">// 确保了上述两步，才更新Config
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>		remote <span style="color:#ff79c6">:=</span> kv.mck.<span style="color:#50fa7b">Query</span>(local.Num <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">1</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4">// 更新Config
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>        <span style="color:#6272a4">// ...
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>用这种方法将就能保证在shard还没有完全获取或者给予完成的时候，不影响已经存在的Shard的服务，也就是后两个challenge的内容。</p>
+<p>如何检测Shard多余/缺失？可以在Shard里加入ConfigNum字段标识，这样就可以结合curConfig和prevConfig找出它们了。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">type</span> Shard <span style="color:#8be9fd;font-style:italic">struct</span> {
+</span></span><span style="display:flex;"><span>	ConfigNum <span style="color:#8be9fd">int</span>
+</span></span><span style="display:flex;"><span>	Mp        <span style="color:#8be9fd;font-style:italic">map</span>[<span style="color:#8be9fd">string</span>]<span style="color:#8be9fd">string</span>
+</span></span><span style="display:flex;"><span>	Id        <span style="color:#8be9fd">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// 多余
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#ff79c6">for</span> shardId, gid <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> kv.prevConfig.Shards {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> gid <span style="color:#ff79c6">==</span> kv.gid <span style="color:#ff79c6">&amp;&amp;</span> kv.curConfig.Shards[shardId] <span style="color:#ff79c6">!=</span> gid <span style="color:#ff79c6">&amp;&amp;</span> kv.shardMap[shardId].ConfigNum &lt; kv.curConfig.Num {
+</span></span><span style="display:flex;"><span>        redundantShardIdList = <span style="color:#8be9fd;font-style:italic">append</span>(redundantShardIdList, shardId)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// 缺失
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>recv <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">true</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">for</span> sid, gid <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> kv.prevConfig.Shards {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> gid <span style="color:#ff79c6">!=</span> kv.gid <span style="color:#ff79c6">&amp;&amp;</span> kv.curConfig.Shards[sid] <span style="color:#ff79c6">==</span> kv.gid <span style="color:#ff79c6">&amp;&amp;</span> kv.shardMap[sid].ConfigNum &lt; kv.curConfig.Num {
+</span></span><span style="display:flex;"><span>        recv = <span style="color:#ff79c6">false</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>相应地在添加Shard的时候，需要填入对应的ConfigNum。</p>
+<h3 id="如何迁移shard">如何迁移Shard</h3>
+<p>得到了redundantShardIdList后，就可以向相应的server发送shard了。需要发送以下内容：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">type</span> PushShardArgs <span style="color:#8be9fd;font-style:italic">struct</span> {
+</span></span><span style="display:flex;"><span>	Shard     Shard
+</span></span><span style="display:flex;"><span>	ConfigNum <span style="color:#8be9fd">int</span>
+</span></span><span style="display:flex;"><span>	SeqMap    <span style="color:#8be9fd;font-style:italic">map</span>[<span style="color:#8be9fd">int64</span>]<span style="color:#8be9fd">int</span>
+</span></span><span style="display:flex;"><span>	ClientGid <span style="color:#8be9fd">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>比较特别的是SeqMap，因为很有可能在config change的时候某个client从请求server A变成了请求server B，那么就会产生重复请求问题。所以server B需要找到自己的SeqMap和server A发送过来的SeqMap之间的差集，把增量部分加到自己的SeqMap里。</p>
+<p>另外ConfigNum也必不可少，接收端比较自己的ConfigNum发现接受的ConfigNum更大的时候，说明还没准备好；如果更小则说明发送端过时，这两种情况都需要返回错误，让发送端继续发送或者放弃发送。</p>
+<p>由于需要把Shard同步到Raft集群里，Leader收到请求后要向Raft层转递这个信息，然后在applier端完成最后的插入操作。</p>
+<p>applier的代码：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>info <span style="color:#ff79c6">:=</span> cmd.Command.(PushShardInfo)
+</span></span><span style="display:flex;"><span>shard <span style="color:#ff79c6">:=</span> info.Shard
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">if</span> kv.curConfig.Num &lt; cmd.ConfigNum {
+</span></span><span style="display:flex;"><span>    res.Err = ErrNotReady
+</span></span><span style="display:flex;"><span>} <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">if</span> shard.ConfigNum &lt; kv.curConfig.Num {
+</span></span><span style="display:flex;"><span>    res.Err = ErrConfigStale
+</span></span><span style="display:flex;"><span>} <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">if</span> kv.shardMap[info.Shard.Id].Mp <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// already received, do nothing
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>} <span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span>    kv.shardMap[shard.Id] = shard.<span style="color:#50fa7b">Clone</span>(shard.ConfigNum)
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">for</span> cid, rid <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> info.SeqMap {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> rid0, ok <span style="color:#ff79c6">:=</span> kv.seqMap[cid]; !ok <span style="color:#ff79c6">||</span> rid0 &lt; rid {
+</span></span><span style="display:flex;"><span>            kv.seqMap[cid] = rid
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="如何更新config">如何更新Config</h3>
+<p>在上述ConfigLoop的最后，leader给raft层传递一个更新Config的消息即可。注意applier的时候初始化Shard。</p>
+<h3 id="如何garbage-collect">如何Garbage Collect</h3>
+<p>在ConfigLoop里生成的push协程发现返回结果是OK的话，就向raft层传递一个Garbage Collect的消息。</p>
+<h3 id="snapshot">Snapshot</h3>
+<p>仅需要持久化这几个变量：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> (kv <span style="color:#ff79c6">*</span>ShardKV) <span style="color:#50fa7b">takeSnapshot</span>(lastIndex <span style="color:#8be9fd">int</span>) {
+</span></span><span style="display:flex;"><span>	w <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">new</span>(bytes.Buffer)
+</span></span><span style="display:flex;"><span>	e <span style="color:#ff79c6">:=</span> labgob.<span style="color:#50fa7b">NewEncoder</span>(w)
+</span></span><span style="display:flex;"><span>	e.<span style="color:#50fa7b">Encode</span>(kv.shardMap)
+</span></span><span style="display:flex;"><span>	e.<span style="color:#50fa7b">Encode</span>(kv.seqMap)
+</span></span><span style="display:flex;"><span>	e.<span style="color:#50fa7b">Encode</span>(kv.curConfig)
+</span></span><span style="display:flex;"><span>	e.<span style="color:#50fa7b">Encode</span>(kv.prevConfig)
+</span></span><span style="display:flex;"><span>	kv.rf.<span style="color:#50fa7b">Snapshot</span>(lastIndex, w.<span style="color:#50fa7b">Bytes</span>())
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>lastIndex是applier层收到的msg的index</p>
+<h3 id="timing-is-everything">Timing is Everything</h3>
+<p>仔细阅读Test代码会发现，一些Test会在对Config乱改一通之后sleep一段时间，然后直接把用不到的Group给kill掉，接着再去check。于是如果这期间shard migration没有完成的话就会一直not ready，永远没法完成测试。这一开始给我造成了很大困惑，最后还是通过微调timing通过了所有测试。我最终把raft层等待时间设为2000ms，config_loop时间设置为300ms。</p>
+
+        </p>
+    </div>
+</div>
+
+<aside class="post-toc">
+    <nav id="toc">
+        <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#font-stylecolorrgb0-0-0架构总览font"><!-- raw HTML omitted -->架构总览<!-- raw HTML omitted --></a></li>
+        <li><a href="#5a-shardctrler">5A shardctrler</a></li>
+        <li><a href="#5b-shard-movement--challenges">5B Shard Movement &amp;&amp; Challenges</a>
+          <ul>
+            <li><a href="#如何发现迁移目标">如何发现迁移目标</a></li>
+            <li><a href="#如何迁移shard">如何迁移Shard</a></li>
+            <li><a href="#如何更新config">如何更新Config</a></li>
+            <li><a href="#如何garbage-collect">如何Garbage Collect</a></li>
+            <li><a href="#snapshot">Snapshot</a></li>
+            <li><a href="#timing-is-everything">Timing is Everything</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+    </nav>
+</aside>
+
+
+
+    
+
+        </main><footer class="footer">
+    <span>&copy; 2024 </span>
+    <span>
+        Made with &#10084;&#65039; using <a target="_blank" href="https://github.com/526avijitgupta/gokarna">Gokarna</a>
+    </span>
+</footer>
+</body>
+</html>

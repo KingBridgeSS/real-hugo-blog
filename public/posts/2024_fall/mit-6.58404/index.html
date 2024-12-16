@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        :root {
+            --accent-color: #FF4D4D;
+        }
+    </style>
+
+    
+    
+    
+    
+    
+    
+
+    
+    <title>MIT 6.5840(4) - Lab2 &amp; Lab4</title>
+    <meta name="description" content="">
+    <meta name="keywords" content='Coding'>
+
+    <meta property="og:url" content="http://localhost:1313/posts/2024_fall/mit-6.58404/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="MIT 6.5840(4) - Lab2 &amp; Lab4">
+    <meta property="og:description" content="">
+    <meta property="og:image" content="/images/avatar.png">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="MIT 6.5840(4) - Lab2 &amp; Lab4">
+    <meta name="twitter:description" content="">
+    <meta property="twitter:domain" content="http://localhost:1313/posts/2024_fall/mit-6.58404/">
+    <meta property="twitter:url" content="http://localhost:1313/posts/2024_fall/mit-6.58404/">
+    <meta name="twitter:image" content="/images/avatar.png">
+
+    
+    <link rel="canonical" href="http://localhost:1313/posts/2024_fall/mit-6.58404/" />
+
+    <link rel="stylesheet" type="text/css" href="http://localhost:1313//css/normalize.min.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" type="text/css" href="http://localhost:1313//css/main.css">
+    <link disabled id="dark-theme" rel="stylesheet" href="http://localhost:1313//css/dark.css">
+
+    <script src="http://localhost:1313//js/svg-injector.min.js"></script>
+    <script src="http://localhost:1313//js/feather-icons.min.js"></script>
+    <script src="http://localhost:1313//js/main.js"></script>
+
+    
+    
+</head>
+<body>
+        <script type="text/javascript">
+            
+            setThemeByUserPref();
+        </script><header class="header">
+    <nav class="header-nav">
+
+        
+        <div class="avatar">
+            <a href="http://localhost:1313/">
+                <img src="http://localhost:1313//images/avatar.png" alt="avatar" />
+            </a>
+        </div>
+        
+
+        <div class="nav-title">
+            <a class="nav-brand" href="http://localhost:1313/">BRIdGE&#39;s blog</a>
+        </div>
+
+        <div class="nav-links">
+            
+            <div class="nav-link">
+                <a href="http://localhost:1313/posts/"> Posts </a>
+            </div>
+            
+            <div class="nav-link">
+                <a href="http://localhost:1313/tags/"> Tags </a>
+            </div>
+            
+            <div class="nav-link">
+                <a href="http://localhost:1313/contact/"> Contact </a>
+            </div>
+            
+            <div class="nav-link">
+                <a href="http://localhost:1313/index.xml"> RSS </a>
+            </div>
+            
+            <div class="nav-link">
+                <a href="https://github.com/kingbridgess"><span data-feather='github'></span>  </a>
+            </div>
+            
+
+            <span class="nav-icons-divider"></span>
+            <div class="nav-link dark-theme-toggle">
+                <span id="dark-theme-toggle-screen-reader-target" class="sr-only"></span>
+                <a>
+                    <span id="theme-toggle-icon" data-feather="moon"></span>
+                </a>
+            </div>
+
+            <div class="nav-link" id="hamburger-menu-toggle">
+                <span id="hamburger-menu-toggle-screen-reader-target" class="sr-only">menu</span>
+                <a>
+                    <span data-feather="menu"></span>
+                </a>
+            </div>
+
+            
+            <ul class="nav-hamburger-list visibility-hidden">
+                
+                <li class="nav-item">
+                    <a href="http://localhost:1313/posts/"> Posts </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="http://localhost:1313/tags/"> Tags </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="http://localhost:1313/contact/"> Contact </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="http://localhost:1313/index.xml"> RSS </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="https://github.com/kingbridgess"><span data-feather='github'></span>  </a>
+                </li>
+                
+                <li class="nav-item dark-theme-toggle">
+                    <span id="dark-theme-toggle-screen-reader-target" class="sr-only">theme</span>
+                    <a>
+                        <span id="theme-toggle-icon" data-feather="moon"></span>
+                    </a>
+                </li>
+            </ul>
+
+        </div>
+    </nav>
+</header>
+<main id="content">
+    <div class="post container">
+    <div class="post-header-section">
+        <h1>MIT 6.5840(4) - Lab2 &amp; Lab4</h1>
+        <small role="doc-subtitle"></small>
+        <p class="post-date">
+            October 30, 2024
+        </p>
+
+        <ul class="post-tags">
+        
+            <li class="post-tag"><a href="http://localhost:1313/tags/coding">Coding</a></li>
+        
+        </ul>
+    </div>
+
+    <div class="post-content">
+        <p>
+            <h1 id="lab2-keyvalue-server">Lab2 Key/Value Server</h1>
+<p>lab2要求实现一个线性一致的KV数据库，可能会存在不稳定的网络（比如高延迟、丢包等情况），但是server不会crash。</p>
+<p>难点在于client由于超时重传（类似于TCP），可能会发送一个请求多次，server接收到的这些重复请求也不一定是连续的。此时就需要server维护一个hashMap用于记录请求ID以及对应的第一次成功的返回结果。
+hashSet显然需要及时清理。我采用的方案是client在确认发包成功后，继续发送携带请求ID的ResolveRPC直到成功，server通过ResovleRPC把hashMap中的请求ID删除。删除操作是幂等的，不需要保证线性一致。
+例如，一个完整的PUT请求如下：</p>
+<p>server维护done = make(map[int64]string)</p>
+<p>● client发送PUT(x,1)，ID=1</p>
+<p>● server判断ID是否存在于done。如果存在，返回里面的值；否则处理并把结果存在done里</p>
+<p>● client收到之后发送Resolve(1)</p>
+<p>● server执行delete(done, 1)</p>
+<p>一次上述的操作是原子性的。</p>
+<h1 id="lab4-fault-tolerant-kvserver">Lab4 Fault-tolerant KVServer</h1>
+<p>基于RAFT协议实现一个Fault-tolerant KVServer</p>
+<h2 id="client实现">Client实现</h2>
+<p>所有的读写请求都必须直接从client发送给leader server。有两种情况client不知道leader是谁：</p>
+<ul>
+<li>第一次发送请求</li>
+<li>server易主/crash，返回报错</li>
+</ul>
+<p>此时client就需要不断重新尝试另一个server，直到请求被成功接收。注意到不同的命令有相同的发送方式，可以抽象出一层来专门用于发送RPC，我这里使用了策略模式。</p>
+<h2 id="server实现">Server实现</h2>
+<h3 id="如何返回rpc结果">如何返回RPC结果</h3>
+<p>对于RPC接受的一个Op，leader需要将它通过Raft的Start接口达成共识。对于写请求（GET），client只需要知道它成功就行；对于读请求（PUT/APPEND），client还需要知道结果。</p>
+<p>我们用一个专门的协程applier循环读取Raft commit上来的Op。如果是读请求，不做处理；如果是写请求，则更新KVmap。这样每一个Op都对应着一个独立的commandIndex，定义一个这样的map：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>resultChMap <span style="color:#8be9fd;font-style:italic">map</span>[<span style="color:#8be9fd">int</span>]<span style="color:#8be9fd;font-style:italic">chan</span> opResult
+</span></span></code></pre></div><p>RPC协程与applier协程通过这个map里的管道通信，以返回RPC结果。</p>
+<p>要注意RPC在返回结果后需要销毁对应的通道。</p>
+<h3 id="幂等性设计">幂等性设计</h3>
+<h4 id="raft层commitindex幂等">raft层commitIndex幂等</h4>
+<p>raft有可能提交log过时的commitIndex，因此要注意在真正apply的时候添加如下判断</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span> msg.CommandIndex &gt; kv.lastApplied
+</span></span></code></pre></div><p>但这样可能会造成过时请求得不到channel的信息而发生阻塞，所以还需要在RPC处添加timeout。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>ticker <span style="color:#ff79c6">:=</span> time.<span style="color:#50fa7b">NewTicker</span>(time.<span style="color:#50fa7b">Duration</span>(CHANNEL_TIMEOUT) <span style="color:#ff79c6">*</span> time.Millisecond)
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">defer</span> ticker.<span style="color:#50fa7b">Stop</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">select</span> {
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">case</span> opResult <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">&lt;-</span>ch:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> opResult.err <span style="color:#ff79c6">!=</span> <span style="color:#f1fa8c">&#34;&#34;</span> {
+</span></span><span style="display:flex;"><span>        reply.Err = <span style="color:#50fa7b">Err</span>(opResult.err)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">case</span> <span style="color:#ff79c6">&lt;-</span>ticker.C:
+</span></span><span style="display:flex;"><span>    reply.Err = NOTALEADER
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="client请求幂等">client请求幂等</h4>
+<p>由于网络故障等原因，server接收到的命令可能是重复的，并且client只认最新结果（这和TCP超时重传有所差异）。对于读请求，并不会使得KVmap状态发生改变；但是对于写请求，就必须保证它的幂等性。</p>
+<p>考虑维护这样一个map，key是clientID，value是序列号（从0开始增长）</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>seqMap      <span style="color:#8be9fd;font-style:italic">map</span>[<span style="color:#8be9fd">int64</span>]<span style="color:#8be9fd">int</span>
+</span></span></code></pre></div><p>applier每次读取到一个Op就判断一下序列号，如果Op序列号是旧序列号+1，则可以正常处理写请求（或者no-op的读请求）。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> (kv <span style="color:#ff79c6">*</span>KVServer) <span style="color:#50fa7b">processSeq</span>(op Op) <span style="color:#8be9fd">bool</span> {
+</span></span><span style="display:flex;"><span>	seq0, ok <span style="color:#ff79c6">:=</span> kv.seqMap[op.ClientID]
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> !ok {
+</span></span><span style="display:flex;"><span>		kv.seqMap[op.ClientID] = op.Seq
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">return</span> <span style="color:#ff79c6">true</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> !(seq0<span style="color:#ff79c6">+</span><span style="color:#bd93f9">1</span> <span style="color:#ff79c6">==</span> op.Seq) {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">return</span> <span style="color:#ff79c6">false</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	kv.seqMap[op.ClientID]<span style="color:#ff79c6">++</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> <span style="color:#ff79c6">true</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// applier处理RAFT层传上来的Op逻辑：
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#ff79c6">if</span> kv.<span style="color:#50fa7b">processSeq</span>(op) {
+</span></span><span style="display:flex;"><span>    k <span style="color:#ff79c6">:=</span> op.OpKey
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">switch</span> op.OpType {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">case</span> PUTOP:
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            kv.mp[k] = op.OpValue
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">case</span> APPENDOP:
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            kv.mp[k] = kv.mp[k] <span style="color:#ff79c6">+</span> op.OpValue
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="snapshot">Snapshot</h3>
+<p>理解snapshot的数据流传递至关重要：</p>
+<ul>
+<li>server发现Raft State太大，leader对其raft层发送snapshot指令，传递一些关于server状态的信息</li>
+<li>raft层向persister保存snapshot和raft状态</li>
+<li>raft层向follower发送InstallSnapshotRPC</li>
+<li>follower向server层传递snapshot，server层将snapshot里的server状态应用于自身。</li>
+</ul>
+<p>对于server检查raft state是否达到snapshot阈值的时机，在接收到applyMsg并更新了状态后是比较合适的。不应该在start后立即检查，因为此时还没有立刻达成共识。</p>
+<p>server需要持久化的状态如下：</p>
+<ul>
+<li>lastApplied</li>
+<li>mp(即KVMap)</li>
+<li>seqMap</li>
+</ul>
+<h2 id="拓展">拓展</h2>
+<p>一个上网冲浪搜集到的拓展，目前我还没实现</p>
+<p><strong>Read-only Operations Optimize</strong></p>
+<p>论文中第8节讲述其实现在处理读请求的时候，可以不用往log里加东西。这需要实现两点：</p>
+<ul>
+<li>leader需要确保拥有最新的commit log。这可以在每一个leader选举成功后commit一个no-op实现。</li>
+<li>leader在处理读请求的时候需要确保自身还是leader，这就需要leader在处理前与大多数节点确认自己仍是leader。</li>
+</ul>
+
+        </p>
+    </div>
+</div>
+
+<aside class="post-toc">
+    <nav id="toc">
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#lab2-keyvalue-server">Lab2 Key/Value Server</a></li>
+    <li><a href="#lab4-fault-tolerant-kvserver">Lab4 Fault-tolerant KVServer</a>
+      <ul>
+        <li><a href="#client实现">Client实现</a></li>
+        <li><a href="#server实现">Server实现</a>
+          <ul>
+            <li><a href="#如何返回rpc结果">如何返回RPC结果</a></li>
+            <li><a href="#幂等性设计">幂等性设计</a>
+              <ul>
+                <li><a href="#raft层commitindex幂等">raft层commitIndex幂等</a></li>
+                <li><a href="#client请求幂等">client请求幂等</a></li>
+              </ul>
+            </li>
+            <li><a href="#snapshot">Snapshot</a></li>
+          </ul>
+        </li>
+        <li><a href="#拓展">拓展</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+    </nav>
+</aside>
+
+
+
+    
+
+        </main><footer class="footer">
+    <span>&copy; 2024 </span>
+    <span>
+        Made with &#10084;&#65039; using <a target="_blank" href="https://github.com/526avijitgupta/gokarna">Gokarna</a>
+    </span>
+</footer>
+</body>
+</html>

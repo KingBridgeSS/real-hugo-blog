@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        :root {
+            --accent-color: #FF4D4D;
+        }
+    </style>
+
+    
+    
+    
+    
+    
+    
+
+    
+    <title>MIT 6.5840(3) - Lab3 Raft</title>
+    <meta name="description" content="">
+    <meta name="keywords" content='Coding'>
+
+    <meta property="og:url" content="http://localhost:1313/posts/2024_fall/mit-6.58403/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="MIT 6.5840(3) - Lab3 Raft">
+    <meta property="og:description" content="">
+    <meta property="og:image" content="/images/avatar.png">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="MIT 6.5840(3) - Lab3 Raft">
+    <meta name="twitter:description" content="">
+    <meta property="twitter:domain" content="http://localhost:1313/posts/2024_fall/mit-6.58403/">
+    <meta property="twitter:url" content="http://localhost:1313/posts/2024_fall/mit-6.58403/">
+    <meta name="twitter:image" content="/images/avatar.png">
+
+    
+    <link rel="canonical" href="http://localhost:1313/posts/2024_fall/mit-6.58403/" />
+
+    <link rel="stylesheet" type="text/css" href="http://localhost:1313//css/normalize.min.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" type="text/css" href="http://localhost:1313//css/main.css">
+    <link disabled id="dark-theme" rel="stylesheet" href="http://localhost:1313//css/dark.css">
+
+    <script src="http://localhost:1313//js/svg-injector.min.js"></script>
+    <script src="http://localhost:1313//js/feather-icons.min.js"></script>
+    <script src="http://localhost:1313//js/main.js"></script>
+
+    
+    
+</head>
+<body>
+        <script type="text/javascript">
+            
+            setThemeByUserPref();
+        </script><header class="header">
+    <nav class="header-nav">
+
+        
+        <div class="avatar">
+            <a href="http://localhost:1313/">
+                <img src="http://localhost:1313//images/avatar.png" alt="avatar" />
+            </a>
+        </div>
+        
+
+        <div class="nav-title">
+            <a class="nav-brand" href="http://localhost:1313/">BRIdGE&#39;s blog</a>
+        </div>
+
+        <div class="nav-links">
+            
+            <div class="nav-link">
+                <a href="http://localhost:1313/posts/"> Posts </a>
+            </div>
+            
+            <div class="nav-link">
+                <a href="http://localhost:1313/tags/"> Tags </a>
+            </div>
+            
+            <div class="nav-link">
+                <a href="http://localhost:1313/contact/"> Contact </a>
+            </div>
+            
+            <div class="nav-link">
+                <a href="http://localhost:1313/index.xml"> RSS </a>
+            </div>
+            
+            <div class="nav-link">
+                <a href="https://github.com/kingbridgess"><span data-feather='github'></span>  </a>
+            </div>
+            
+
+            <span class="nav-icons-divider"></span>
+            <div class="nav-link dark-theme-toggle">
+                <span id="dark-theme-toggle-screen-reader-target" class="sr-only"></span>
+                <a>
+                    <span id="theme-toggle-icon" data-feather="moon"></span>
+                </a>
+            </div>
+
+            <div class="nav-link" id="hamburger-menu-toggle">
+                <span id="hamburger-menu-toggle-screen-reader-target" class="sr-only">menu</span>
+                <a>
+                    <span data-feather="menu"></span>
+                </a>
+            </div>
+
+            
+            <ul class="nav-hamburger-list visibility-hidden">
+                
+                <li class="nav-item">
+                    <a href="http://localhost:1313/posts/"> Posts </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="http://localhost:1313/tags/"> Tags </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="http://localhost:1313/contact/"> Contact </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="http://localhost:1313/index.xml"> RSS </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="https://github.com/kingbridgess"><span data-feather='github'></span>  </a>
+                </li>
+                
+                <li class="nav-item dark-theme-toggle">
+                    <span id="dark-theme-toggle-screen-reader-target" class="sr-only">theme</span>
+                    <a>
+                        <span id="theme-toggle-icon" data-feather="moon"></span>
+                    </a>
+                </li>
+            </ul>
+
+        </div>
+    </nav>
+</header>
+<main id="content">
+    <div class="post container">
+    <div class="post-header-section">
+        <h1>MIT 6.5840(3) - Lab3 Raft</h1>
+        <small role="doc-subtitle"></small>
+        <p class="post-date">
+            October 30, 2024
+        </p>
+
+        <ul class="post-tags">
+        
+            <li class="post-tag"><a href="http://localhost:1313/tags/coding">Coding</a></li>
+        
+        </ul>
+    </div>
+
+    <div class="post-content">
+        <p>
+            <p>由于Lab2是一个KV数据库，和Lab3、Lab4比较相关，所以之后的文章会把他们放在一起。这篇文章先介绍Lab3。</p>
+<h1 id="raft算法概览资料">Raft算法概览资料</h1>
+<p>可以去这个网站可视化地理解Raft算法</p>
+<p><a href="https://thesecretlivesofdata.com/raft/#home">Raft (thesecretlivesofdata.com)</a></p>
+<p>算法实现的所有细节在raft-extended论文中都有清晰的阐述，这里不再赘述。重点关注figure 2的实现逻辑</p>
+<p><a href="https://pdos.csail.mit.edu/6.824/papers/raft-extended.pdf">pdos.csail.mit.edu/6.824/papers/raft-extended.pdf</a></p>
+<h1 id="3a-leader-election">3A: Leader Election</h1>
+<p>为了实现Leader Election，事实上我们就要实现Raft中最核心的两个timing了。我把ElectionTimeout和broadcastTime分别用electionTickerHandler和broadcastTickerHandler封装，他们用Ticker来控制（尽管课程建议不要用Ticker，但其实也不难实现）</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> (rf <span style="color:#ff79c6">*</span>Raft) <span style="color:#50fa7b">Ticker</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">for</span> rf.<span style="color:#50fa7b">killed</span>() <span style="color:#ff79c6">==</span> <span style="color:#ff79c6">false</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">select</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">case</span> <span style="color:#ff79c6">&lt;-</span>rf.electionTimer.C:
+</span></span><span style="display:flex;"><span>			{
+</span></span><span style="display:flex;"><span>				rf.<span style="color:#50fa7b">electionTickerHandler</span>()<span style="color:#6272a4">// 这个函数会reset timer，下同
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>			}
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">case</span> <span style="color:#ff79c6">&lt;-</span>rf.broadcastTimer.C:
+</span></span><span style="display:flex;"><span>			{
+</span></span><span style="display:flex;"><span>				rf.<span style="color:#50fa7b">broadcastTickerHandler</span>()
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// reset timer
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">func</span> (rf <span style="color:#ff79c6">*</span>Raft) <span style="color:#50fa7b">resetElectionTimeout</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#50fa7b">resetTimer</span>(rf.electionTimer, rf.<span style="color:#50fa7b">getElectionTimeout</span>())
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> (rf <span style="color:#ff79c6">*</span>Raft) <span style="color:#50fa7b">resetBroadcastTimeout</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#50fa7b">resetTimer</span>(rf.broadcastTimer, time.<span style="color:#50fa7b">Duration</span>(broadcastTimeout)<span style="color:#ff79c6">*</span>time.Millisecond)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">resetTimer</span>(timer <span style="color:#ff79c6">*</span>time.Timer, d time.Duration) {
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> !timer.<span style="color:#50fa7b">Stop</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">select</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">case</span> <span style="color:#ff79c6">&lt;-</span>timer.C:
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">default</span>:
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	timer.<span style="color:#50fa7b">Reset</span>(d)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// 初始化：
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>rf.electionTimer = time.<span style="color:#50fa7b">NewTimer</span>(rf.<span style="color:#50fa7b">getElectionTimeout</span>())
+</span></span><span style="display:flex;"><span>rf.broadcastTimer = time.<span style="color:#50fa7b">NewTimer</span>(time.<span style="color:#50fa7b">Duration</span>(broadcastTimeout) <span style="color:#ff79c6">*</span> time.Millisecond)
+</span></span></code></pre></div><p>electionTickerHandler根据当前state的状态决定是否要发起竞选</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> (rf <span style="color:#ff79c6">*</span>Raft) <span style="color:#50fa7b">electionTickerHandler</span>() {
+</span></span><span style="display:flex;"><span>	rf.mu.<span style="color:#50fa7b">Lock</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">switch</span> rf.state {
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">case</span> FOLLOWER:
+</span></span><span style="display:flex;"><span>		{
+</span></span><span style="display:flex;"><span>			<span style="color:#ff79c6">go</span> rf.<span style="color:#50fa7b">campaign</span>()
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">case</span> CANDIDATE:
+</span></span><span style="display:flex;"><span>		{
+</span></span><span style="display:flex;"><span>			<span style="color:#ff79c6">go</span> rf.<span style="color:#50fa7b">campaign</span>()
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">case</span> LEADER:
+</span></span><span style="display:flex;"><span>		{
+</span></span><span style="display:flex;"><span>			<span style="color:#6272a4">// do nothing
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	rf.<span style="color:#50fa7b">resetElectionTimeout</span>()
+</span></span><span style="display:flex;"><span>	rf.mu.<span style="color:#50fa7b">Unlock</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>campaign函数用于发起竞选，遍历peer向他们发送对应的RequestVoteRPC。发送RequestVoteRPC的过程一定要异步发送（使用go 协程）。</p>
+<p>由于是异步发送，在接受选票的时候可以用go channel。注意接受选票前要把大锁释放了。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#ff79c6">for</span> peerIndex <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> rf.peers {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> peerIndex <span style="color:#ff79c6">!=</span> rf.me {
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4">// 异步发送这些请求
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>        <span style="color:#ff79c6">go</span> rf.<span style="color:#50fa7b">sendRequestVote</span>(peerIndex, <span style="color:#ff79c6">&amp;</span>reqArgs, replyCh)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>nVotes <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">0</span> <span style="color:#6272a4">//收到的选票
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>target <span style="color:#ff79c6">:=</span> rf.<span style="color:#50fa7b">majority</span>()
+</span></span><span style="display:flex;"><span>term <span style="color:#ff79c6">:=</span> rf.currentTerm
+</span></span><span style="display:flex;"><span>rf.mu.<span style="color:#50fa7b">Unlock</span>()
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">for</span> reply <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> replyCh { <span style="color:#6272a4">// 从管道接受选票
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    <span style="color:#ff79c6">if</span> reply.Ok {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> reply.VoteGranted {
+</span></span><span style="display:flex;"><span>            nVotes <span style="color:#ff79c6">+=</span> <span style="color:#bd93f9">1</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">if</span> nVotes <span style="color:#ff79c6">&gt;=</span> target {
+</span></span><span style="display:flex;"><span>                rf.<span style="color:#50fa7b">seizePower</span>(term)
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">break</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        } <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">if</span> reply.Term &gt; term {
+</span></span><span style="display:flex;"><span>            <span style="color:#6272a4">// ...
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>            <span style="color:#ff79c6">break</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>我把leader上任的函数封装成了seizePower函数，目前仅用于转换state，后续会用来做很多其他事情。这里有一个非常重要的判断：seizePower需要判断当前term是否和当时竞选的term一致，否则就有可能导致两个leader同时在一个term内出现（split brain）。</p>
+<p>RequestVote的实现较为简单，直接将论文中的文字翻译一下即可。</p>
+<p>broadcastTickerHandler在下文中将详细叙述，在3A中只要发送心跳包即可。</p>
+<h1 id="3b-log-replication">3B: Log Replication</h1>
+<p>在实现这一部分前，可以先看看TiKV对Simple Request Flow的优化</p>
+<p><a href="https://cn.pingcap.com/blog/optimizing-raft-in-tikv/">TiKV 功能介绍 - Raft 的优化 | PingCAP</a></p>
+<p>这里非常精妙的一点就是Asynchronous Apply，即使用一个单独的进程，根据lastApplied和commitIndex的关系专门用于apply command。</p>
+<p>我把这一个进程成为commitChecker，它会不断循环运行。当检测到commitIndex改变时，就进行apply。这可以用sync.Cond进行同步来减少无效循环。有两种时机会更新commitIndex：</p>
+<ul>
+<li>follower在appendEntriesRPC时更新commitIndex</li>
+<li>leader检查matchIndex发现某个Index被大多数节点接受了</li>
+</ul>
+<p>另外，通过applyCh向上层apply可能是一个耗时操作，此时最好不要使用锁。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> (rf <span style="color:#ff79c6">*</span>Raft) <span style="color:#50fa7b">commitChecker</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">for</span> !rf.<span style="color:#50fa7b">killed</span>() {
+</span></span><span style="display:flex;"><span>		rf.mu.<span style="color:#50fa7b">Lock</span>()
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">for</span> rf.commitIndex <span style="color:#ff79c6">&lt;=</span> rf.lastApplied {
+</span></span><span style="display:flex;"><span>			rf.commitCheckerCond.<span style="color:#50fa7b">Wait</span>()
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#6272a4">// commit的范围： [lastApplied+1,commitIndex]
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>		entries <span style="color:#ff79c6">:=</span> rf.log[rf.lastApplied<span style="color:#ff79c6">+</span><span style="color:#bd93f9">1</span> : rf.commitIndex<span style="color:#ff79c6">+</span><span style="color:#bd93f9">1</span>]
+</span></span><span style="display:flex;"><span>		rf.mu.<span style="color:#50fa7b">Unlock</span>()
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">for</span> i, entry <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> entries {
+</span></span><span style="display:flex;"><span>			msg <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">...</span>
+</span></span><span style="display:flex;"><span>			rf.applyCh <span style="color:#ff79c6">&lt;-</span> msg
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		rf.mu.<span style="color:#50fa7b">Lock</span>()
+</span></span><span style="display:flex;"><span>		rf.lastApplied = <span style="color:#8be9fd;font-style:italic">max</span>(commitIndex, rf.lastApplied)
+</span></span><span style="display:flex;"><span>		rf.mu.<span style="color:#50fa7b">Unlock</span>()
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>前面提到，broadcastTickerHandler用于leader发送最新的日志，follower用AppendEntries接受。这里的实现细节在figure 2中有详细叙述，翻译成代码即可。值得一提的是，论文中对于 Receiver implementation 处理 entry conflicts 并更新log的部分比较冗长，这里的等价实现比较简单。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#ff79c6">if</span> args.PrevLogIndex<span style="color:#ff79c6">+</span><span style="color:#8be9fd;font-style:italic">len</span>(args.Entries) &gt; <span style="color:#8be9fd;font-style:italic">len</span>(rf.log)<span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span> {
+</span></span><span style="display:flex;"><span>    rf.log = <span style="color:#8be9fd;font-style:italic">append</span>(rf.log[:args.PrevLogIndex<span style="color:#ff79c6">+</span><span style="color:#bd93f9">1</span>], args.Entries<span style="color:#ff79c6">...</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>等价的原因来源于paper中的figure 3的数学归纳推论：</p>
+<blockquote>
+<p>Log Matching: if two logs contain an entry with the same index and term, then the logs are identical in all entries up through the given index. §5.3</p>
+</blockquote>
+<p>当然这里涉及到GC回收原始数组的问题（后面的优化会提到），更好的写法是：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>newLog <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>([]LogEntry, args.PrevLogIndex<span style="color:#ff79c6">+</span><span style="color:#bd93f9">1</span><span style="color:#ff79c6">+</span><span style="color:#8be9fd;font-style:italic">len</span>(args.Entries))
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">copy</span>(newLog, rf.log[:args.PrevLogIndex<span style="color:#ff79c6">+</span><span style="color:#bd93f9">1</span>])
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">copy</span>(newLog[args.PrevLogIndex<span style="color:#ff79c6">+</span><span style="color:#bd93f9">1</span>:], args.Entries)
+</span></span><span style="display:flex;"><span>rf.log = newLog
+</span></span></code></pre></div><p>另外，这里的appendEntriesRPC和心跳包用的是同一个timer，符合论文里提到的包文复用原理。</p>
+<p>最后，leader需要不断统计matchIndex的情况以更新自己的commitIndex。</p>
+<blockquote>
+<p>If there exists an N such that N &gt; commitIndex, a majorityof matchIndex[i] ≥ N, and log[N].term == currentTerm:</p>
+<p>set commitIndex = N</p>
+</blockquote>
+<p>这里也是为leader独立出来了一个不断运行的leaderUpdateCommitIndexChecker来更新commitIndex。</p>
+<h1 id="3c-persistence">3C: Persistence</h1>
+<p>原理上来说把论文里的几个 Persistent State 写好就行，注意每次这几个state的时候都要persist一遍。</p>
+<p>这里有一个很值得思考的问题：commitIndex和lastApplied要不要持久化？</p>
+<p>以下这段话摘自</p>
+<p><a href="https://github.com/niebayes/MIT-6.5840">niebayes/MIT-6.5840: My solution for MIT 6.5840 (aka. MIT 6.824). No failure within 30,000 tests. (github.com)</a></p>
+<blockquote>
+<p>首先要说明的是，以下的讨论建立在 log entries 被 persist 的基础上。</p>
+<p>对于 committed index，没有必要 persist 它。对于 leader，它通过 broadcast append entries 或者 heartbeat，可以知道每个 followers 的 match index。再通过 majority 的 min match index，即可知道当前集群的 committed index。对于 follower，通过 leader 发送过来的 committed index，就可以知道 committed index。</p>
+<p>但是显然，由于 log entries 被 persist 了，那么再 persist committed index，是很直接的一个行为。如果 persist 了，自然可以省去不少麻烦。所以，很多 raft 的实现都会 persist committed index，我也是这样设计的。</p>
+<p>对于 applied index，我们需要考虑 server 层的实现。实际上，raft 层所存储的 applied index 通常是滞后于 server 层的 applied index。raft 层与 server 层大概是这样交互的：</p>
+<p>某个 raft peer 检测到某个 committed log entry 还没有被 server 所 apply（通过比对 raft 层维护的 committed index 与 applied index），那么它就会把这个 log entry 传输给 server 层。</p>
+<p>server 层收到之后，会检查这个 log entry 是否真的尚未被 apply。</p>
+<p>如果是，那么这个 log entry 可能会被立即 apply，也可能会被buffer 在 server 层，待之前的所有 log entries 都被 apply 了之后，再 apply 这个 log entry。</p>
+<p>如果已经被 apply 了，那么直接 discard 这个 log entry。</p>
+<p>每当 server apply 了一个 log entry 后，server 层会通知 raft 层自己已经 apply 到了这个 log entry，此时 raft 层才会更新 applied index。</p>
+<p>有些设计会让 server 批量 apply 一些 log entries，然后再通知 raft 层，而不是 apply 一个就通知一次。</p>
+<p>那么 applied index 到底要不要 persist 呢？这就要看 server 层的 state machine 的 persist 设计了。</p>
+<p>如果 state machine 没有 persist 机制，那么 restart 时就需要 replay raft log entries，则 raft 层不能 persist applied index。如果 persist 了，那么 raft 层会错误地认为 server 层已经 apply 了，但实际上 server 层没有。</p>
+<p>如果 state machine 有 persist 机制，且 server 层自己 persist 了 applied index，那么 raft 层可以 persist applied index 也可以不 persist。不管 raft 层 persist 与否，server 层的 applied index 就保证了 safety，即不会重复 apply 同一个 log entries。当然，如果 raft 层 persist 了applied index，那么 raft 层就可以少发送很多已经 applied log entries 给 server 层，这可以提高性能。</p>
+<p>总结而言，committed index 没有必要 persist，但是既然 log entries 被 persist 了，那么 persist committed index 是很自然、直接的行为，可以稍稍提高性能。applied index 要不要 persist，需要看 server 层的 state machine 的 persist 的设计，不能盲目地 persist 了事。所以很多构建在 raft 之上的一些应用，都会把应用层的 storage 和 raft 层的 storage 分开，这给系统设计带来了更高的 flexibility。</p>
+</blockquote>
+<p>值得注意的是，Lab3的test里state machine是幂等的hashMap实现的，所以重复apply并没有影响。</p>
+<h1 id="conflict-optimization">Conflict Optimization</h1>
+<p>3C中有几个test会先把几个server乱搞一通，造成很大的日志冲突，然后再来一个Complete Agreement，限时10s。如果不实现论文中提到的通过term number调整nextIndex的方法几乎一定会TLE。</p>
+<p>我使用的方法基于课程中提到的几个参数：</p>
+<blockquote>
+<pre><code>XTerm:  term in the conflicting entry (if any)
+
+XIndex: index of first entry with that term (if any)
+
+XLen:   log length
+</code></pre>
+<p>Then the leader&rsquo;s logic can be something like:</p>
+<p>Case 1: leader doesn&rsquo;t have XTerm:</p>
+<pre><code>nextIndex = XIndex
+</code></pre>
+<p>Case 2: leader has XTerm:</p>
+<pre><code>nextIndex = leader's last entry for XTerm
+</code></pre>
+<p>Case 3: follower&rsquo;s log is too short:</p>
+<pre><code>nextIndex = XLen
+</code></pre>
+</blockquote>
+<p>分别在AppendEntries的发送端和接收端实现相应的逻辑即可。</p>
+<h1 id="3d-log-compaction">3D: Log Compaction</h1>
+<p>在实现 Figure 13  的逻辑之余，有一个非常重要的问题：由于commitMsg和snapshotMsg走的都是applyCh，并且在commit snapshot后server层期望的下一个commitIndex会变成lastIncludedIndex+1，他们的提交顺序是线性一致的。为了保证线性一致，在apply的时候msg和snapshot需要分别加锁，但是server层在接受apply的时候可能会去拿raft的锁，导致死锁。</p>
+<p>所以我抽象了一个applier出来，让apply操作是异步的从而不会阻塞，但是是在同一个协程里完成来保证线性一致，并且用到了一个FIFO队列来防止msg堆积。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> (ap <span style="color:#ff79c6">*</span>Applier) <span style="color:#50fa7b">Apply</span>(msg ApplyMsg) {
+</span></span><span style="display:flex;"><span>	ap.mu.<span style="color:#50fa7b">Lock</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">defer</span> ap.mu.<span style="color:#50fa7b">Unlock</span>()
+</span></span><span style="display:flex;"><span>	ap.q.<span style="color:#50fa7b">Enqueue</span>(msg)
+</span></span><span style="display:flex;"><span>	ap.cond.<span style="color:#50fa7b">Signal</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> (ap <span style="color:#ff79c6">*</span>Applier) <span style="color:#50fa7b">committer</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">for</span> !ap.<span style="color:#50fa7b">killed</span>() {
+</span></span><span style="display:flex;"><span>		ap.mu.<span style="color:#50fa7b">Lock</span>()
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">for</span> ap.q.<span style="color:#50fa7b">IsEmpty</span>() {
+</span></span><span style="display:flex;"><span>			ap.cond.<span style="color:#50fa7b">Wait</span>()
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		msg, ok <span style="color:#ff79c6">:=</span> ap.q.<span style="color:#50fa7b">Dequeue</span>()
+</span></span><span style="display:flex;"><span>		ap.mu.<span style="color:#50fa7b">Unlock</span>()
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">if</span> !ok {
+</span></span><span style="display:flex;"><span>			<span style="color:#ff79c6">continue</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">*</span>ap.applyCh <span style="color:#ff79c6">&lt;-</span> msg
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// 同时，别忘了实现Kill()方法，并且在raft.Kill()方法里调用它
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// ...
+</span></span></span></code></pre></div><p>此外对于3D来说，还要注意以下细节：</p>
+<ul>
+<li>首先所有的log访问都变成了“虚拟地址”。这个虚拟地址需要在通信中使用，但是实际访问log的时候需要转换成实际地址。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#6272a4">// vIndex: 虚拟索引
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">func</span> (rf <span style="color:#ff79c6">*</span>Raft) <span style="color:#50fa7b">fetchLog</span>(vIndex <span style="color:#8be9fd">int</span>) LogEntry {
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> rf.log[vIndex<span style="color:#ff79c6">-</span>rf.snapshotLastIndex]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li>我看到很多朋友的实现直接把snapshot存到了内存里，这显然是不妥的。事实上翻看测试代码会发现snapshot是在上层测试的。上层向下转递snapshot的时候通过raft#Snapshot函数，raft则通过<code>rf.persister.Save(raftstate, data)</code>和<code>persister.ReadSnapshot()</code>与persister层交互snapshot，完全不必保留在内存里</li>
+<li>发起InstallSnapshot的时机：一种是follower收到日志后发现args.PrevLogIndex &lt; rf.snapshotLastIndex；另一种是leader在发送日志的时候发现peerNextIndex &lt;= rf.snapshotLastIndex。对于第一种情况，我在AppendEntriesResult里加入了NeedSnapshot字段让follower直接返回；对于第二种情况，在leader端判断即可。</li>
+<li>follower在确定自己需要InstallSnapshot后，AppendEntries的结果为success，这样可以避免leader重复发送无用的包。</li>
+<li>persister保存状态的时候需要把snapshotLastIndex、snapshotLastTerm也保存了</li>
+</ul>
+<h1 id="timing">Timing</h1>
+<p>论文里要求：</p>
+<blockquote>
+<p>broadcastTime ≪ electionTimeout ≪ MTBF ( MTBF is the average time between failures for a single server.  )</p>
+</blockquote>
+<p>test里的election timeout设置为了最大为1000ms，并且要求每秒最多发送10个包。</p>
+<p>注意electionTimeout需要确保随机性来防止split brain。</p>
+<p>经过多次调参，最终我采用了以下timing：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">var</span> electionTimeoutRange = [<span style="color:#bd93f9">2</span>]<span style="color:#8be9fd">int</span>{<span style="color:#bd93f9">600</span>, <span style="color:#bd93f9">900</span>}
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">const</span> broadcastTimeout = <span style="color:#bd93f9">150</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">const</span> leaderCheckCommitTimeout = <span style="color:#bd93f9">75</span>
+</span></span></code></pre></div><h1 id="some-cornor-cases">Some Cornor Cases</h1>
+<ol>
+<li>由于leader的sendAppendEntries是异步的，所以在发送给peer前需要判断<code>rf.state == LEADER &amp;&amp; rf.currentTerm == args.Term</code></li>
+<li>为了方便leader复活，在Make函数中如果state=LEADER，需要立即启动leaderUpdateCommitIndexChecker协程。</li>
+<li>Golang GC对切片的处理问题。上面说到，直接这样截断log：</li>
+</ol>
+<p><code>rf.log = rf.log[index-rf.snapshotLastIndex:]</code></p>
+<p>会导致底层数组没有被回收，因为它仍然有切片引用。原理见：</p>
+<p><a href="https://stackoverflow.com/questions/28432658/does-go-garbage-collect-parts-of-slices">arrays - Does go garbage collect parts of slices? - Stack Overflow</a></p>
+<p>这里的log是长久存在且非常大的数据，如果这样写运行时间长了可能会OOM。所以需要改成：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#6272a4">// rf.log = rf.log[index-rf.snapshotLastIndex:]
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>newLogSize <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">len</span>(rf.log) <span style="color:#ff79c6">-</span> (index <span style="color:#ff79c6">-</span> rf.snapshotLastIndex)
+</span></span><span style="display:flex;"><span>newLog <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>([]LogEntry, newLogSize)
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">copy</span>(newLog, rf.log[index<span style="color:#ff79c6">-</span>rf.snapshotLastIndex:])
+</span></span><span style="display:flex;"><span>rf.log = newLog
+</span></span></code></pre></div><p>个人感觉不同于rust的严谨，golang在copy和reference这一块比较模糊。下面是GPT的总结：</p>
+<ul>
+<li><strong>对于基本类型（如整数、浮点数、布尔值等）</strong>：</li>
+<li>赋值操作会进行值复制。</li>
+<li><strong>对于切片、映射（map）和通道（channel）等引用类型</strong>：</li>
+<li>赋值操作会复制引用（即指针），而不会复制底层数据结构。</li>
+<li><strong>对于结构体</strong>：</li>
+<li>赋值操作会复制整个结构体，包括它包含的所有字段。</li>
+</ul>
+<h1 id="拓展">拓展</h1>
+<p>网上收集了一些对raft的优化</p>
+<h2 id="joint-consensus">Joint Consensus</h2>
+<p>论文中提到的 Cluster membership changes过程概述：</p>
+<p>leader要求大多数node（包括新旧节点）进入Joint Consensus状态，在该状态下提议（多数认可）之后就能改配置。</p>
+<h2 id="font-stylecolorrgb31-35-40tinykv-和-etcd-中-raft-log-的设计font"><!-- raw HTML omitted -->TinyKv 和 etcd 中 Raft Log 的设计<!-- raw HTML omitted --></h2>
+<p><!-- raw HTML omitted -->在 tinykv 和 etcd 中，所有的 log entries 有三种状态：<!-- raw HTML omitted --></p>
+<ul>
+<li><!-- raw HTML omitted -->compacted: 所有被 compacted 的 stale log entries。这些 log entries 间接地存储在 snapshot 中。<!-- raw HTML omitted --></li>
+<li><!-- raw HTML omitted -->persisted: 所有已经被 persisted、且未被 compacted 的 log entries。这些 log entries 存储在 stable storage 中，即 non-volatile storage。<!-- raw HTML omitted --></li>
+<li><!-- raw HTML omitted -->cached: 所有尚未被 persist、暂存在 memory 中的 log entries。这些 log entries 存储在 unstable storage 中，即 volatile storage。<!-- raw HTML omitted --></li>
+</ul>
+<p><!-- raw HTML omitted -->为了区分这些 log entries，有这些 log indexes：<!-- raw HTML omitted --></p>
+<ul>
+<li><!-- raw HTML omitted -->snapshot index: 对应 compacted log entries 的最后那个 log entry。<!-- raw HTML omitted --></li>
+<li><!-- raw HTML omitted -->first stable index: 对应 persisted log entries 的第一个 log entry。<!-- raw HTML omitted --></li>
+<li><!-- raw HTML omitted -->applied index: 对应被 server 层 applied 的最新的那个 log entry。<!-- raw HTML omitted --></li>
+<li><!-- raw HTML omitted -->committed index: 对应被 raft 层 committed 的最新的那个 log entry。<!-- raw HTML omitted --></li>
+<li><!-- raw HTML omitted -->last stable index: 对应 persisted log entries 的最后那个 log entry。<!-- raw HTML omitted --></li>
+<li><!-- raw HTML omitted -->first unstable index: 对应 cached log entries 的第一个 log entry。<!-- raw HTML omitted --></li>
+<li><!-- raw HTML omitted -->last unstable index: 对应 cached log entries 的最后那个 log entry。<!-- raw HTML omitted --></li>
+</ul>
+<p><!-- raw HTML omitted -->一般情况下，这些 indexes 的大小顺序是这样的：<!-- raw HTML omitted --></p>
+<p><!-- raw HTML omitted -->snapshot index &lt; first stable index ≤ applied index ≤ committed index ≤ last stable index &lt; first unstable index ≤ last unstable index<!-- raw HTML omitted --></p>
+<p><!-- raw HTML omitted -->且有：<!-- raw HTML omitted --></p>
+<ul>
+<li><!-- raw HTML omitted -->snapshot index + 1 = first stable index.<!-- raw HTML omitted --></li>
+<li><!-- raw HTML omitted -->last stable index + 1 = first unstable index<!-- raw HTML omitted --></li>
+</ul>
+<h2 id="font-stylecolorrgb31-35-40automatic-step-downfont"><!-- raw HTML omitted -->Automatic step down<!-- raw HTML omitted --></h2>
+<p>在 leader 每次 tick 时，检测 leader 是否在最近收到了多数派的 RPC 回复，包括 request vote, heartbeat, append entries, install snapshot 等。如果最近没有收到多数派的回复，则 leader 自动 step down</p>
+<h2 id="write-batch-for-raft-log">write batch for raft log</h2>
+<p>如果每次有新的 log entries，都立即将其写入磁盘，由于 disk io 的高 overhead，显然会比较严重地影响 performance。一般来说，会先将 log entries 存在 unstable storage 中，例如 memory。然后在合适的时机使用 batch 的方式一次性写入多个 log entries。</p>
+<h2 id="font-stylecolorrgb31-35-40pipeline-raft-messagesfont"><!-- raw HTML omitted -->pipeline raft messages<!-- raw HTML omitted --></h2>
+<p>如果只是用 batch，Leader 还是需要等待 Follower 返回才能继续后面的流程，我们这里还可以使用 Pipeline 来进行加速。大家知道，Leader 会维护一个 NextIndex 的变量来表示下一个给 Follower 发送的 log 位置，通常情况下面，只要 Leader 跟 Follower 建立起了连接，我们都会认为网络是稳定互通的。所以当 Leader 给 Follower 发送了一批 log 之后，它可以直接更新 NextIndex，并且立刻发送后面的 log，不需要等待 Follower 的返回。如果网络出现了错误，或者 Follower 返回一些错误，Leader 就需要重新调整 NextIndex，然后重新发送 log 了。</p>
+<h2 id="parallel-append-log-and-broadcast-append-entries">parallel append log and broadcast append entries</h2>
+<p>对于上面提到的一次 request 简易 Raft 流程来说，我们可以将 2 和 3 并行处理，也就是 Leader 可以先并行的将 log 发送给 Followers，然后再将 log append。为什么可以这么做，主要是因为在 Raft 里面，如果一个 log 被大多数的节点append，我们就可以认为这个 log 是被 committed 了，所以即使 Leader 再给 Follower 发送 log 之后，自己 append log 失败 panic 了，只要 N / 2 + 1个 Follower 能接收到这个 log 并成功 append，我们仍然可以认为这个 log 是被 committed 了，被 committed 的 log 后续就一定能被成功 apply。</p>
+<p>那为什么我们要这么做呢？主要是因为 append log 会涉及到落盘，有开销，所以我们完全可以在 Leader 落盘的同时让 Follower 也尽快的收到 log 并 append。</p>
+<h2 id="follower-redirect-proposal-to-leader">follower redirect proposal to leader</h2>
+<p>follower 在与 leader 交互的过程中，会记录 follower 承认的、目前尚存活的 leader 的地址。当 follower 收到一个 client request 时，会把这个 request 转发给 leader，而不是先 reject 然后让 client 去重试。显然，这样可以稍提高 performance。</p>
+<p>事实上，paper中也是这样描述的。</p>
+<h1 id="批量测试">批量测试</h1>
+<p>由于有很多cornor cases出现的概率非常低，需要批量+并行测试才能确保bug free。</p>
+<p>测试脚本可以参考</p>
+<p><a href="https://github.com/niebayes/MIT-6.5840/blob/no_logging/src/raft/run_all_tests.sh">MIT-6.5840/src/raft/run_all_tests.sh at no_logging · niebayes/MIT-6.5840 (github.com)</a></p>
+<p>本文阐述的实现已经通过上述所有测试。</p>
+<p><img src="
+        /posts/2024_fall/assets/1722494871516-85bf1359-c908-490b-bfe2-5a1d24ea0af4.png"/></p>
+<h1 id="参考">参考</h1>
+<p><a href="https://github.com/niebayes/MIT-6.5840">niebayes/MIT-6.5840: My solution for MIT 6.5840 (aka. MIT 6.824). No failure within 30,000 tests. (github.com)</a></p>
+<p><a href="https://github.com/niebayes/MIT-6.5840">https://github.com/niebayes/MIT-6.5840</a></p>
+<p><a href="https://github.com/OneSizeFitsQuorum/MIT6.824-2021">https://github.com/OneSizeFitsQuorum/MIT6.824-2021</a></p>
+<p><a href="https://cn.pingcap.com/blog/optimizing-raft-in-tikv/">TiKV 功能介绍 - Raft 的优化 | PingCAP</a></p>
+
+        </p>
+    </div>
+</div>
+
+<aside class="post-toc">
+    <nav id="toc">
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#raft算法概览资料">Raft算法概览资料</a></li>
+    <li><a href="#3a-leader-election">3A: Leader Election</a></li>
+    <li><a href="#3b-log-replication">3B: Log Replication</a></li>
+    <li><a href="#3c-persistence">3C: Persistence</a></li>
+    <li><a href="#conflict-optimization">Conflict Optimization</a></li>
+    <li><a href="#3d-log-compaction">3D: Log Compaction</a></li>
+    <li><a href="#timing">Timing</a></li>
+    <li><a href="#some-cornor-cases">Some Cornor Cases</a></li>
+    <li><a href="#拓展">拓展</a>
+      <ul>
+        <li><a href="#joint-consensus">Joint Consensus</a></li>
+        <li><a href="#font-stylecolorrgb31-35-40tinykv-和-etcd-中-raft-log-的设计font"><!-- raw HTML omitted -->TinyKv 和 etcd 中 Raft Log 的设计<!-- raw HTML omitted --></a></li>
+        <li><a href="#font-stylecolorrgb31-35-40automatic-step-downfont"><!-- raw HTML omitted -->Automatic step down<!-- raw HTML omitted --></a></li>
+        <li><a href="#write-batch-for-raft-log">write batch for raft log</a></li>
+        <li><a href="#font-stylecolorrgb31-35-40pipeline-raft-messagesfont"><!-- raw HTML omitted -->pipeline raft messages<!-- raw HTML omitted --></a></li>
+        <li><a href="#parallel-append-log-and-broadcast-append-entries">parallel append log and broadcast append entries</a></li>
+        <li><a href="#follower-redirect-proposal-to-leader">follower redirect proposal to leader</a></li>
+      </ul>
+    </li>
+    <li><a href="#批量测试">批量测试</a></li>
+    <li><a href="#参考">参考</a></li>
+  </ul>
+</nav>
+    </nav>
+</aside>
+
+
+
+    
+
+        </main><footer class="footer">
+    <span>&copy; 2024 </span>
+    <span>
+        Made with &#10084;&#65039; using <a target="_blank" href="https://github.com/526avijitgupta/gokarna">Gokarna</a>
+    </span>
+</footer>
+</body>
+</html>
