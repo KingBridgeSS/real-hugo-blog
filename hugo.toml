@@ -1,4 +1,4 @@
-# baseURL = "http://127.0.0.1"
+#baseURL = "http://127.0.0.1"
 # https://github.com/526avijitgupta/gokarna
 baseURL="https://blog.kingbridge.one"
 defaultContentLanguage = "en"
@@ -17,7 +17,7 @@ enableRobotsTXT = true
     ordered = false
 [params]
   avatarURL = "/images/avatar.jpg"
-  # description = "Fortunate enough to get a glimpse of the feast of techiques."
+  description = "cd /home/bridge"
   # showPostsOnHomePage = "recent"
   # maxArticles = 10 # 主页显示的最大文章数
 [menu]
