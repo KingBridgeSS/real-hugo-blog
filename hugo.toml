@@ -1,4 +1,4 @@
-#baseURL = "http://127.0.0.1"
+# baseURL = "http://127.0.0.1"
 # https://github.com/526avijitgupta/gokarna
 baseURL="https://blog.kingbridge.one"
 defaultContentLanguage = "en"

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        :root {
+            --accent-color: #FF4D4D;
+        }
+    </style>
+
+    
+    
+    
+    
+    
+    
+
+    
+    <title>Proxmox 虚拟机和容器化独立 IPV6 设置</title>
+    <meta name="description" content="cd /home/bridge">
+    <meta name="keywords" content='misc'>
+
+    <meta property="og:url" content="https://blog.kingbridge.one/posts/2025_spring/proxmox_vm_ipv6/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Proxmox 虚拟机和容器化独立 IPV6 设置">
+    <meta property="og:description" content="cd /home/bridge">
+    <meta property="og:image" content="/images/avatar.jpg">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Proxmox 虚拟机和容器化独立 IPV6 设置">
+    <meta name="twitter:description" content="cd /home/bridge">
+    <meta property="twitter:domain" content="https://blog.kingbridge.one/posts/2025_spring/proxmox_vm_ipv6/">
+    <meta property="twitter:url" content="https://blog.kingbridge.one/posts/2025_spring/proxmox_vm_ipv6/">
+    <meta name="twitter:image" content="/images/avatar.jpg">
+
+    
+    <link rel="canonical" href="https://blog.kingbridge.one/posts/2025_spring/proxmox_vm_ipv6/" />
+
+    <link rel="stylesheet" type="text/css" href="https://blog.kingbridge.one//css/normalize.min.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" type="text/css" href="https://blog.kingbridge.one//css/main.css">
+    <link disabled id="dark-theme" rel="stylesheet" href="https://blog.kingbridge.one//css/dark.css">
+
+    <script src="https://blog.kingbridge.one//js/svg-injector.min.js"></script>
+    <script src="https://blog.kingbridge.one//js/feather-icons.min.js"></script>
+    <script src="https://blog.kingbridge.one//js/main.js"></script>
+
+    
+    
+</head>
+<body>
+        <script type="text/javascript">
+            
+            setThemeByUserPref();
+        </script><header class="header">
+    <nav class="header-nav">
+
+        
+        <div class="avatar">
+            <a href="https://blog.kingbridge.one/">
+                <img src="https://blog.kingbridge.one//images/avatar.jpg" alt="avatar" />
+            </a>
+        </div>
+        
+
+        <div class="nav-title">
+            <a class="nav-brand" href="https://blog.kingbridge.one/">BRIdGE&#39;s blog</a>
+        </div>
+
+        <div class="nav-links">
+            
+            <div class="nav-link">
+                <a href="https://blog.kingbridge.one/posts/"> Posts </a>
+            </div>
+            
+            <div class="nav-link">
+                <a href="https://blog.kingbridge.one/tags/"> Tags </a>
+            </div>
+            
+            <div class="nav-link">
+                <a href="https://blog.kingbridge.one/contact/"> Contact </a>
+            </div>
+            
+            <div class="nav-link">
+                <a href="https://blog.kingbridge.one/index.xml"> RSS </a>
+            </div>
+            
+            <div class="nav-link">
+                <a href="https://github.com/kingbridgess"><span data-feather='github'></span>  </a>
+            </div>
+            
+
+            <span class="nav-icons-divider"></span>
+            <div class="nav-link dark-theme-toggle">
+                <span id="dark-theme-toggle-screen-reader-target" class="sr-only"></span>
+                <a>
+                    <span id="theme-toggle-icon" data-feather="moon"></span>
+                </a>
+            </div>
+
+            <div class="nav-link" id="hamburger-menu-toggle">
+                <span id="hamburger-menu-toggle-screen-reader-target" class="sr-only">menu</span>
+                <a>
+                    <span data-feather="menu"></span>
+                </a>
+            </div>
+
+            
+            <ul class="nav-hamburger-list visibility-hidden">
+                
+                <li class="nav-item">
+                    <a href="https://blog.kingbridge.one/posts/"> Posts </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="https://blog.kingbridge.one/tags/"> Tags </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="https://blog.kingbridge.one/contact/"> Contact </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="https://blog.kingbridge.one/index.xml"> RSS </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="https://github.com/kingbridgess"><span data-feather='github'></span>  </a>
+                </li>
+                
+                <li class="nav-item dark-theme-toggle">
+                    <span id="dark-theme-toggle-screen-reader-target" class="sr-only">theme</span>
+                    <a>
+                        <span id="theme-toggle-icon" data-feather="moon"></span>
+                    </a>
+                </li>
+            </ul>
+
+        </div>
+    </nav>
+</header>
+<main id="content">
+    <div class="post container">
+    <div class="post-header-section">
+        <h1>Proxmox 虚拟机和容器化独立 IPV6 设置</h1>
+        <small role="doc-subtitle"></small>
+        <p class="post-date">
+            April 8, 2025
+        </p>
+
+        <ul class="post-tags">
+        
+            <li class="post-tag"><a href="https://blog.kingbridge.one/tags/misc">misc</a></li>
+        
+        </ul>
+    </div>
+
+    <div class="post-content">
+        <p>
+            <p>环境：PVE和虚拟机都可以申请独立的IPV6。假设IPV6网关为：</p>
+<p><code>1111:2222:3333:4444::1</code></p>
+<p>可申请的IPV6段为：</p>
+<p><code>1111:2222:3333:4444::/64</code></p>
+<h1 id="pve配置">PVE配置</h1>
+<p>这里vmbr0直通物理网卡，vmbr1用于PVE内的NAT。IPV6走vmbr0。</p>
+<p>假设给PVE的IPV6申请了</p>
+<p><code>1111:2222:3333:4444::2/64</code></p>
+<p>vi /etc/network/interfaces</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>root@pve:~# cat <span style="color:#ff79c6">/</span>etc<span style="color:#ff79c6">/</span>network<span style="color:#ff79c6">/</span>interfaces
+</span></span><span style="display:flex;"><span>auto lo
+</span></span><span style="display:flex;"><span>iface lo inet loopback
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>iface enp1s0 inet manual
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>iface wlp2s0 inet manual
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>auto vmbr0
+</span></span><span style="display:flex;"><span>iface vmbr0 inet static
+</span></span><span style="display:flex;"><span>        address <span style="color:#bd93f9">11.22.33.2</span><span style="color:#ff79c6">/</span><span style="color:#bd93f9">24</span>  
+</span></span><span style="display:flex;"><span>        gateway <span style="color:#bd93f9">11.22.33.1</span>
+</span></span><span style="display:flex;"><span>        bridge<span style="color:#ff79c6">-</span>ports enp1s0
+</span></span><span style="display:flex;"><span>        bridge<span style="color:#ff79c6">-</span>stp off
+</span></span><span style="display:flex;"><span>        bridge<span style="color:#ff79c6">-</span>fd <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>iface vmbr0 inet6 static
+</span></span><span style="display:flex;"><span>        address <span style="color:#bd93f9">1111</span>:<span style="color:#bd93f9">2222</span>:<span style="color:#bd93f9">3333</span>:<span style="color:#bd93f9">4444</span>::<span style="color:#bd93f9">2</span><span style="color:#ff79c6">/</span><span style="color:#bd93f9">64</span>
+</span></span><span style="display:flex;"><span>        gateway <span style="color:#bd93f9">1111</span>:<span style="color:#bd93f9">2222</span>:<span style="color:#bd93f9">3333</span>:<span style="color:#bd93f9">4444</span>::<span style="color:#bd93f9">1</span>
+</span></span><span style="display:flex;"><span>auto vmbr1
+</span></span><span style="display:flex;"><span>iface vmbr1 inet static
+</span></span><span style="display:flex;"><span>        address <span style="color:#bd93f9">192.168.233.10</span><span style="color:#ff79c6">/</span><span style="color:#bd93f9">24</span>
+</span></span><span style="display:flex;"><span>        #gateway <span style="color:#bd93f9">192.168.233.1</span>
+</span></span><span style="display:flex;"><span>        bridge_ports none
+</span></span><span style="display:flex;"><span>        bridge_stp off
+</span></span><span style="display:flex;"><span>        bridge_fd <span style="color:#bd93f9">0</span>
+</span></span></code></pre></div><p>应用配置</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plain" data-lang="plain"><span style="display:flex;"><span>systemctl restart networking
+</span></span></code></pre></div><p>可以通过</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plain" data-lang="plain"><span style="display:flex;"><span>curl 6.ipw.cn
+</span></span></code></pre></div><p>验证IPV6是否开启。</p>
+<p>接下来编辑</p>
+<p>vi /etc/sysctl.conf</p>
+<p>确保这两行的开启</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plain" data-lang="plain"><span style="display:flex;"><span>net.ipv6.conf.all.forwarding=1                                                                                                                                                                                   
+</span></span><span style="display:flex;"><span>net.ipv6.conf.all.proxy_ndp=1
+</span></span></code></pre></div><p>执行 sysctl -p 生效。</p>
+<p>接下来配置ndp代理。使用 ndppd 比较方便。</p>
+<p><code>apt install ndppd</code></p>
+<p>接下来 vi /etc/ndppd.conf</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>route<span style="color:#ff79c6">-</span>ttl <span style="color:#bd93f9">30000</span>
+</span></span><span style="display:flex;"><span>proxy vmbr0 {
+</span></span><span style="display:flex;"><span>    rule <span style="color:#bd93f9">1111</span>:<span style="color:#bd93f9">2222</span>:<span style="color:#bd93f9">3333</span>:<span style="color:#bd93f9">4444</span>::<span style="color:#ff79c6">/</span><span style="color:#bd93f9">64</span> {
+</span></span><span style="display:flex;"><span>        auto
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>启动服务：systemctl enable &ndash;now ndppd</p>
+<h1 id="虚拟机配置">虚拟机配置</h1>
+<p>虚拟机使用上面的vmbr0网桥，然后手动配置IPV6即可，例如ubuntu的netplan。</p>
+<p>如果要为docker container使用IPV6，可以在docker启动的时候添加参数<code>--network host</code>直接使用HOST的IPV6。</p>
+
+        </p>
+    </div>
+</div>
+
+<aside class="post-toc">
+    <nav id="toc">
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#pve配置">PVE配置</a></li>
+    <li><a href="#虚拟机配置">虚拟机配置</a></li>
+  </ul>
+</nav>
+    </nav>
+</aside>
+
+
+
+    
+
+        </main><footer class="footer">
+    <span>&copy; 2025 </span>
+    <span>
+        Made with &#10084;&#65039; using <a target="_blank" href="https://github.com/526avijitgupta/gokarna">Gokarna</a>
+    </span>
+</footer>
+</body>
+</html>
