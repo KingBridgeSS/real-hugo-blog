@@ -80,7 +80,7 @@ main#content > .container {
   bottom: 20px;
   overflow-x: hidden;
   overflow-y: auto;
-  right: 200px;
+  right: 20px;
 }
 
 #toc ul {
