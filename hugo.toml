@@ -57,6 +57,11 @@ enableRobotsTXT = true
     identifier = "github"
     url = "https://github.com/kingbridgess"
     weight = 6
-    
     # We use feather-icons: https://feathericons.com/
     pre = "<span data-feather='github'></span>"
+
+  [[menu.main]]
+    identifier = "bilibili"
+    url = "https://space.bilibili.com/30839247"
+    weight = 7
+	pre = "<img class='svg-inject' src='/images/bilibili.svg' />"
