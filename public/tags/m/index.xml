@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>M on BRIdGE&#39;s blog</title>
+    <link>http://localhost:1313/tags/m/</link>
+    <description>Recent content in M on BRIdGE&#39;s blog</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 14 Aug 2025 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/m/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>在工位上喝杯黑的</title>
+      <link>http://localhost:1313/posts/2025_spring/%E5%AF%B9%E5%9B%BD%E5%86%85%E5%90%84%E5%A4%A7ktv%E6%8A%95%E5%B1%8F%E6%96%B9%E6%A1%88%E7%9A%84%E7%A0%94%E7%A9%B6/</link>
+      <pubDate>Thu, 14 Aug 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/2025_spring/%E5%AF%B9%E5%9B%BD%E5%86%85%E5%90%84%E5%A4%A7ktv%E6%8A%95%E5%B1%8F%E6%96%B9%E6%A1%88%E7%9A%84%E7%A0%94%E7%A9%B6/</guid>
+      <description>&lt;h1 id=&#34;国内各大ktv投屏方案汇总&#34;&gt;国内各大KTV投屏方案汇总&lt;/h1&gt;&#xA;&lt;blockquote&gt;&#xA;&lt;p&gt;作为非必要不社交的i人，有时候歌瘾犯了就会阴暗地一个人去KTV乱唱。由于我的歌单里有好多并非人类的小众歌曲，KTV的点歌系统鉴定为罕见，不让我点，这时候就需要投屏。由于是一个人，就有大把时间现场研究这些投屏方案。本文可能会持续更新。&lt;/p&gt;&#xA;&lt;/blockquote&gt;&#xA;&lt;h1 id=&#34;星聚会&#34;&gt;星聚会&lt;/h1&gt;&#xA;&lt;p&gt;只能用乐播给移动端/PC设备投屏，走的是屏幕共享，乐播的公网后端。实际画面比较糊，传输速率和同步效果也不太理想。&lt;/p&gt;&#xA;&lt;p&gt;乐播会员可以在海鲜市场买一个小时卡。&lt;/p&gt;&#xA;&lt;p&gt;&lt;img src=&#34;&#xD;&#xA;        /posts/2025_spring/assets/image-20250814202300232.png&#34; alt=&#34;image-20250814202300232&#34;/&gt;&lt;/p&gt;&#xA;&lt;h1 id=&#34;纯k&#34;&gt;纯K&lt;/h1&gt;&#xA;&lt;p&gt;纯K支持DLAN协议投屏，但是只能是手机上App主动发起的那种方式，Windows的DLAN Server不能用，而且还得微信扫码绑定设备。&lt;/p&gt;&#xA;&lt;p&gt;用BubbleUPnP可以投本地视频。另外BubbleUPnP还支持连接SMB/UPnP/DLAN/Qobuz/TIDAL/Dropbox/Box/OneDrive等服务器，所以完全可以把纯K当作家庭影院用。&lt;/p&gt;&#xA;&lt;p&gt;&lt;img src=&#34;&#xD;&#xA;        /posts/2025_spring/assets/image-20250814203745281.png&#34; alt=&#34;image-20250814203745281&#34;/&gt;&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
