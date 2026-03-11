@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Hacking on BRIdGE&#39;s blog</title>
-    <link>https://blog.kingbridge.one/tags/hacking/</link>
+    <link>https://blog.kingbridges.top/tags/hacking/</link>
     <description>Recent content in Hacking on BRIdGE&#39;s blog</description>
     <generator>Hugo</generator>
     <language>en</language>
     <lastBuildDate>Thu, 28 Mar 2024 00:00:00 +0000</lastBuildDate>
-    <atom:link href="https://blog.kingbridge.one/tags/hacking/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://blog.kingbridges.top/tags/hacking/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>利用Github Actions生成CodeQL数据库</title>
-      <link>https://blog.kingbridge.one/posts/2024_fall/git-actions-codeql/</link>
+      <link>https://blog.kingbridges.top/posts/2024_fall/git-actions-codeql/</link>
       <pubDate>Thu, 28 Mar 2024 00:00:00 +0000</pubDate>
-      <guid>https://blog.kingbridge.one/posts/2024_fall/git-actions-codeql/</guid>
+      <guid>https://blog.kingbridges.top/posts/2024_fall/git-actions-codeql/</guid>
       <description>&lt;p&gt;&lt;strong&gt;利用Github Actions生成CodeQL数据库 &amp;ndash; 以AliyunCTF2024 Chain17的反序列化链挖掘为例&lt;/strong&gt;&lt;/p&gt;&#xA;&lt;h1 id=&#34;背景&#34;&gt;背景&lt;/h1&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://github.blog/2022-08-15-the-next-step-for-lgtm-com-github-code-scanning/&#34;&gt;lgtm&lt;/a&gt;社区在2022年关闭后，CodeQL只能在本地手动构建，lgtm则被整合进了&lt;a href=&#34;https://docs.github.com/en/code-security/code-scanning/introduction-to-code-scanning/about-code-scanning&#34;&gt;Github Code Scanning&lt;/a&gt;中。&lt;/p&gt;&#xA;&lt;p&gt;可以在Github Action中使用&lt;code&gt;github/codeql-action&lt;/code&gt;来用官方提供的queries对repository的代码进行扫描，结果会显示为Code Scanning Alerts。官方文档还提到，可以自定义QL语句。但是鄙人根据官方文档的配置尝试多次后并不认为可以自定义queries（（&lt;/p&gt;&#xA;&lt;p&gt;但是，可以结合&lt;code&gt;actions/upload-artifact&lt;/code&gt;这个action将构建好的CodeQL数据库导出，然后在本地导入，本地查询。&lt;/p&gt;&#xA;&lt;p&gt;而CodeQL数据库的生成需要正确的编译。幸运的是，github code scanning为我们提供了自动识别编译脚本的功能。&lt;/p&gt;&#xA;&lt;p&gt;另外，Public repository的Actions是免费的，Private repository有免费额度。实战中我们fork官方的repository即可。&lt;/p&gt;&#xA;&lt;h1 id=&#34;题目背景&#34;&gt;题目背景&lt;/h1&gt;&#xA;&lt;p&gt;题目为两个部分，agent和server，都是old-fashion的反序列化入口。题目的流程不再赘述，可以移步&lt;a href=&#34;https://xz.aliyun.com/t/14190&#34;&gt;官方WP&lt;/a&gt;&lt;/p&gt;&#xA;&lt;p&gt;这里说一下思路&lt;/p&gt;&#xA;&lt;h2 id=&#34;agent&#34;&gt;agent&lt;/h2&gt;&#xA;&lt;p&gt;已知&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;Hessian反序列化Map的时候会调用Map.put&lt;/li&gt;&#xA;&lt;li&gt;cn.hutool.json.JSONObject#put(&amp;ldquo;foo&amp;rdquo;, AtomicReference) -&amp;gt; AtomicReference#toString，注意AtomicReference是JDK的内部类才能调用toString，否则会根据属性调用getter&lt;/li&gt;&#xA;&lt;li&gt;POJONode.toString -&amp;gt; Bean.getObject&lt;/li&gt;&#xA;&lt;li&gt;Bean.getObject返回object后，jackson会调用object的所有getter（根据getter名字）&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;所以就需要找一条getter2RCE的链子并绕过黑名单。给了h2依赖，容易想到&lt;a href=&#34;https://su18.org/post/jdbc-connection-url-attack/#h2-rce&#34;&gt;JDBC Connection URL Attack | 素十八 (su18.org)&lt;/a&gt;&lt;/p&gt;&#xA;&lt;p&gt;也就是需要寻找hutool库中getter -&amp;gt; DriverManager.getConnection的链子&lt;/p&gt;&#xA;&lt;h2 id=&#34;server&#34;&gt;server&lt;/h2&gt;&#xA;&lt;p&gt;已知&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;XString#toString -&amp;gt; POJONode#toString -&amp;gt; getter&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;需要找jOOQ库中getter -&amp;gt; RCE的链子&lt;/p&gt;&#xA;&lt;h1 id=&#34;hacking-with-github-actions&#34;&gt;Hacking With Github Actions&lt;/h1&gt;&#xA;&lt;h2 id=&#34;agent-1&#34;&gt;agent&lt;/h2&gt;&#xA;&lt;h3 id=&#34;云编译&#34;&gt;云编译&lt;/h3&gt;&#xA;&lt;p&gt;fork仓库&lt;a href=&#34;https://github.com/dromara/hutool&#34;&gt;dromara/hutool: 🍬A set of tools that keep Java sweet. (github.com)&lt;/a&gt;&lt;/p&gt;</description>
     </item>
   </channel>
