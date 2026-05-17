@@ -1,0 +1,4 @@
+<video width="{{ .Get "width" | default "100%" }}" {{ if ne (.Get "controls") "false" }}controls{{ end }} {{ if eq (.Get "autoplay") "true" }}autoplay muted loop{{ end }}>
+    <source src="{{ .Get "src" }}" type="video/{{ .Get "type" | default "mp4" }}">
+    您的浏览器不支持 video 标签。
+</video>

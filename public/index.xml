@@ -6,8 +6,15 @@
     <description>Recent content on BRIdGE&#39;s blog</description>
     <generator>Hugo</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 14 Aug 2025 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 17 May 2026 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://blog.kingbridges.top/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>浏览器下时域分析实现简易语音嘴唇同步算法</title>
+      <link>https://blog.kingbridges.top/posts/2026/%E5%9F%BA%E4%BA%8E%E6%97%B6%E5%9F%9F%E5%88%86%E6%9E%90%E7%9A%84%E8%AF%AD%E9%9F%B3%E5%98%B4%E5%94%87%E5%90%8C%E6%AD%A5%E7%AE%97%E6%B3%95_%E4%BF%AE%E6%94%B9%E7%89%88/</link>
+      <pubDate>Sun, 17 May 2026 00:00:00 +0000</pubDate>
+      <guid>https://blog.kingbridges.top/posts/2026/%E5%9F%BA%E4%BA%8E%E6%97%B6%E5%9F%9F%E5%88%86%E6%9E%90%E7%9A%84%E8%AF%AD%E9%9F%B3%E5%98%B4%E5%94%87%E5%90%8C%E6%AD%A5%E7%AE%97%E6%B3%95_%E4%BF%AE%E6%94%B9%E7%89%88/</guid>
+      <description>&lt;h1 id=&#34;浏览器下时域分析实现简易语音嘴唇同步算法&#34;&gt;浏览器下时域分析实现简易语音嘴唇同步算法&lt;/h1&gt;&#xA;&lt;p&gt;需求：在实现全双工语音 Agent 助手的客户端时，服务端流式传输PCM编码的语音数据，客户端在播放语音的同时控制一个虚拟形象的嘴唇开合程度。&lt;/p&gt;&#xA;&lt;p&gt;这里的建模比较简单（后面说明项目背景的时候会提到这其实是只一个二次元皮套人(bushi)），把嘴唇开合度记为一个落在$[0,1]$的实数，问题就是：已知&lt;strong&gt;语音的时域&lt;/strong&gt;，求&lt;strong&gt;嘴唇开合度&lt;/strong&gt;，并且语音的传输是实时的。&lt;/p&gt;&#xA;&lt;p&gt;在讨论工程实现之前，需要先了解一些音频分析的基础知识，并把“声音强弱”和“嘴巴开合”之间的关系抽象成一个数学模型。&lt;/p&gt;&#xA;&lt;h2 id=&#34;数学建模&#34;&gt;数学建模&lt;/h2&gt;&#xA;&lt;h3 id=&#34;声音的本质&#34;&gt;声音的本质&lt;/h3&gt;&#xA;&lt;p&gt;从物理上看，声音本质上是介质中的压力扰动。以空气为例，当声源振动时，它会让附近的空气分子发生微小位移，使局部空气出现周期性的压缩和稀疏。这个压缩、稀疏的扰动向外传播，人耳或麦克风感受到的就是随时间变化的声压。&lt;/p&gt;&#xA;&lt;p&gt;如果把某一点处的声压变化记为$p(t)$，那么一个最简单的纯音可以用正弦波表示：&lt;/p&gt;&#xA;$$&#xA;p(t) = A \sin(2\pi f t + \varphi)&#xA;$$&lt;p&gt;其中，$A$表示振幅，决定声音的响度；$f$表示频率，决定声音的音调；$\varphi$表示相位，表示波形在时间轴上的平移。&lt;/p&gt;&#xA;&lt;p&gt;现实生活中的语音大多不是单一的正弦波。人的声带振动、口腔和鼻腔共鸣、舌头和嘴唇的运动都会让声音包含很多频率成分。因此，复杂声音可以近似看成许多不同频率、不同振幅、不同相位的正弦波叠加：&lt;/p&gt;&#xA;$$&#xA;p(t) = \sum_{k=1}^{K} A_k \sin(2\pi f_k t + \varphi_k)&#xA;$$&lt;p&gt;这里的每一项都可以理解为声音中的一个频率成分。不同人的音色、不同元音和辅音的差异，本质上都和这些频率成分的分布有关。&lt;/p&gt;&#xA;&lt;h3 id=&#34;声压电信号与数字音频&#34;&gt;声压、电信号与数字音频&lt;/h3&gt;&#xA;&lt;p&gt;声波是空气中的压力变化，而数字系统不能直接处理连续的空气压力，所以声音通常会经过一条物理和信号处理上的转换链路：&lt;/p&gt;&#xA;$$&#xA;\text{声压变化} \rightarrow \text{振膜振动} \rightarrow \text{模拟电信号} \rightarrow \text{数字音频}&#xA;$$&lt;p&gt;麦克风的振膜会随着空气压力变化而振动，并把这种机械振动转换成连续变化的电压信号。这个电压信号仍然是模拟信号，可以记为：&lt;/p&gt;&#xA;$$&#xA;x(t)&#xA;$$&lt;p&gt;要把连续时间信号表示成数字信号，就需要进行采样。采样的含义是在等间隔的时间点上读取信号值，从而得到一个离散序列：&lt;/p&gt;&#xA;$$&#xA;x[n] = x(nT_s)&#xA;$$&lt;p&gt;其中，$T_s$是采样间隔，采样率$f_s$定义为：&lt;/p&gt;&#xA;$$&#xA;f_s = \frac{1}{T_s}&#xA;$$&lt;p&gt;如果采样率为$24000\text{ Hz}$，就表示每秒采集$24000$个样本。如果一段数字音频有$N$个采样点，那么它对应的时长为：&lt;/p&gt;&#xA;$$&#xA;T = \frac{N}{f_s}&#xA;$$&lt;p&gt;采样时还需要注意Nyquist采样定理。对于最高频率为$f_{\max}$的信号，采样率至少需要满足：&lt;/p&gt;&#xA;$$&#xA;f_s \ge 2f_{\max}&#xA;$$&lt;p&gt;否则高频信号会被错误地折叠到低频，产生混叠。人耳可听范围大约到$20\text{ kHz}$，所以常见音乐采样率会使用$44.1\text{ kHz}$或$48\text{ kHz}$。而语音任务通常不需要完整保留所有高频信息，$16\text{ kHz}$、$24\text{ kHz}$也很常见。&lt;/p&gt;</description>
+    </item>
     <item>
       <title>国内各大KTV投屏方案汇总</title>
       <link>https://blog.kingbridges.top/posts/2025_spring/%E5%AF%B9%E5%9B%BD%E5%86%85%E5%90%84%E5%A4%A7ktv%E6%8A%95%E5%B1%8F%E6%96%B9%E6%A1%88%E7%9A%84%E7%A0%94%E7%A9%B6/</link>

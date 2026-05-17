@@ -4,7 +4,13 @@
 
     <style>
         :root {
-            --accent-color: {{ .Site.Params.AccentColor | default "#FF4D4D" }};
+            --accent-color: {
+                    {
+                    .Site.Params.AccentColor | default "#FF4D4D"
+                }
+            }
+
+            ;
         }
     </style>
 
@@ -36,10 +42,30 @@
     <!-- SEO canonicals: helps Google understand your site better when using marketing campaign tagging etc -->
     <link rel="canonical" href="{{ .Permalink }}" />
 
-    <link rel="stylesheet" type="text/css" href="{{ .Site.BaseURL }}/css/normalize.min.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" type="text/css" href="{{ .Site.BaseURL }}/css/normalize.min.css" media="print"
+        onload="this.media='all'">
     <link rel="stylesheet" type="text/css" href="{{ .Site.BaseURL }}/css/main.css">
     <link disabled id="dark-theme" rel="stylesheet" href="{{ .Site.BaseURL }}/css/dark.css">
 
+    <!-- latextojs for math rendering -->
+    <!-- 引入 KaTeX -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body);"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "\\[", right: "\\]", display: true },
+                    { left: "$", right: "$", display: false },
+                    { left: "\\(", right: "\\)", display: false }
+                ]
+            });
+        });
+    </script>
     <script src="{{ .Site.BaseURL }}/js/svg-injector.min.js"></script>
     <script src="{{ .Site.BaseURL }}/js/feather-icons.min.js"></script>
     <script src="{{ .Site.BaseURL }}/js/main.js"></script>
